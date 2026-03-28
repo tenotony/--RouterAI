@@ -1,0 +1,153 @@
+{
+  "providers": {
+    "groq": {
+      "name": "Groq",
+      "api_base": "https://api.groq.com/openai/v1",
+      "env_key": "GROQ_API_KEY",
+      "models": [
+        "llama-3.3-70b-versatile",
+        "llama-3.1-8b-instant",
+        "mixtral-8x7b-32768"
+      ],
+      "default_model": "llama-3.3-70b-versatile",
+      "priority": 100,
+      "max_tokens": 8192,
+      "supports_vision": false
+    },
+    "gemini": {
+      "name": "Google Gemini",
+      "api_base": "https://generativelanguage.googleapis.com/v1beta/openai",
+      "env_key": "GOOGLE_API_KEY",
+      "models": [
+        "gemini-2.0-flash",
+        "gemini-1.5-flash"
+      ],
+      "default_model": "gemini-2.0-flash",
+      "priority": 88,
+      "max_tokens": 8192,
+      "supports_vision": true
+    },
+    "cerebras": {
+      "name": "Cerebras",
+      "api_base": "https://api.cerebras.ai/v1",
+      "env_key": "CEREBRAS_API_KEY",
+      "models": [
+        "llama3.1-8b",
+        "llama3.1-70b"
+      ],
+      "default_model": "llama3.1-8b",
+      "priority": 95,
+      "max_tokens": 8192,
+      "supports_vision": false
+    },
+    "openrouter": {
+      "name": "OpenRouter",
+      "api_base": "https://openrouter.ai/api/v1",
+      "env_key": "OPENROUTER_API_KEY",
+      "models": [
+        "meta-llama/llama-3.1-8b-instruct:free",
+        "mistralai/mistral-7b-instruct:free",
+        "google/gemma-2-9b-it:free",
+        "qwen/qwen-2.5-72b-instruct:free",
+        "nousresearch/hermes-3-llama-3.1-405b"
+      ],
+      "default_model": "meta-llama/llama-3.1-8b-instruct:free",
+      "priority": 85,
+      "max_tokens": 4096,
+      "supports_vision": false
+    },
+    "mistral": {
+      "name": "Mistral",
+      "api_base": "https://api.mistral.ai/v1",
+      "env_key": "MISTRAL_API_KEY",
+      "models": [
+        "mistral-small-latest",
+        "mistral-medium-latest",
+        "open-mistral-7b"
+      ],
+      "default_model": "mistral-small-latest",
+      "priority": 80,
+      "max_tokens": 8192,
+      "supports_vision": false
+    },
+    "nvidia": {
+      "name": "NVIDIA NIM",
+      "api_base": "https://integrate.api.nvidia.com/v1",
+      "env_key": "NVIDIA_API_KEY",
+      "models": [
+        "meta/llama-3.1-8b-instruct",
+        "meta/llama-3.1-70b-instruct"
+      ],
+      "default_model": "meta/llama-3.1-8b-instruct",
+      "priority": 75,
+      "max_tokens": 4096,
+      "supports_vision": false
+    },
+    "together": {
+      "name": "Together AI",
+      "api_base": "https://api.together.xyz/v1",
+      "env_key": "TOGETHER_API_KEY",
+      "models": [
+        "meta-llama/Llama-3-8b-chat-hf",
+        "mistralai/Mistral-7B-Instruct-v0.2"
+      ],
+      "default_model": "meta-llama/Llama-3-8b-chat-hf",
+      "priority": 70,
+      "max_tokens": 4096,
+      "supports_vision": false
+    },
+    "deepseek": {
+      "name": "DeepSeek",
+      "api_base": "https://api.deepseek.com/v1",
+      "env_key": "DEEPSEEK_API_KEY",
+      "models": [
+        "deepseek-chat",
+        "deepseek-coder"
+      ],
+      "default_model": "deepseek-chat",
+      "priority": 90,
+      "max_tokens": 4096,
+      "supports_vision": false
+    },
+    "siliconflow": {
+      "name": "SiliconFlow",
+      "api_base": "https://api.siliconflow.cn/v1",
+      "env_key": "SILICONFLOW_API_KEY",
+      "models": [
+        "Qwen/Qwen2.5-72B-Instruct",
+        "meta-llama/Meta-Llama-3.1-8B-Instruct"
+      ],
+      "default_model": "Qwen/Qwen2.5-72B-Instruct",
+      "priority": 78,
+      "max_tokens": 4096,
+      "supports_vision": false
+    },
+    "mimo": {
+      "name": "Xiaomi MiMo",
+      "api_base": "https://api.xiaoai.mi.com/v1",
+      "env_key": "MIMO_API_KEY",
+      "models": [
+        "mimo-v2"
+      ],
+      "default_model": "mimo-v2",
+      "priority": 98,
+      "max_tokens": 8192,
+      "supports_vision": true
+    },
+    "ollama": {
+      "name": "Ollama (Local)",
+      "api_base": "http://localhost:11434/v1",
+      "env_key": "",
+      "models": [
+        "llama3.1",
+        "mistral",
+        "qwen2.5"
+      ],
+      "default_model": "llama3.1",
+      "priority": 60,
+      "max_tokens": 4096,
+      "supports_vision": false,
+      "requires_key": false
+    }
+  }
+}

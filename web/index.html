@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RouterAI - แดชบอร์ดจัดการ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07070d;
+            --card: #111119;
+            --card-hover: #16161f;
+            --border: #1c1c2a;
+            --border-active: #2a2a40;
+            --text: #e8e8ed;
+            --text-dim: #6b6b80;
+            --text-mid: #9898ac;
+            --accent: #6366f1;
+            --accent-hover: #5558e0;
+            --green: #10b981;
+            --green-bg: rgba(16,185,129,0.08);
+            --yellow: #f59e0b;
+            --yellow-bg: rgba(245,158,11,0.08);
+            --red: #ef4444;
+            --red-bg: rgba(239,68,68,0.08);
+            --blue: #3b82f6;
+            --orange: #f97316;
+            --purple: #a855f7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Sarabun', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* ─── Header ───────────────────────────── */
+        .header {
+            background: linear-gradient(180deg, #111119 0%, #0d0d14 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        .logo { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-icon {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--accent), var(--purple));
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+        }
+        .logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+        .logo-sub { font-size: 0.75rem; color: var(--text-dim); font-weight: 400; }
+        .header-actions { display: flex; gap: 0.75rem; align-items: center; }
+
+        /* ─── Status Pills ─────────────────────── */
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem; font-weight: 600;
+        }
+        .pill-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
+        .pill-yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245,158,11,0.2); }
+        .pill-red { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+        .pill-dot { width: 7px; height: 7px; border-radius: 50%; }
+        .pill-dot.green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+        .pill-dot.yellow { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+        .pill-dot.red { background: var(--red); box-shadow: 0 0 6px var(--red); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* ─── Container ────────────────────────── */
+        .container { max-width: 1280px; margin: 0 auto; padding: 1.5rem; }
+
+        /* ─── Stats Row ────────────────────────── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.1rem 1.3rem;
+            transition: border-color 0.2s;
+        }
+        .stat-card:hover { border-color: var(--border-active); }
+        .stat-label { color: var(--text-dim); font-size: 0.78rem; font-weight: 500; margin-bottom: 0.3rem; }
+        .stat-value { font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; }
+        .stat-value.green { color: var(--green); }
+        .stat-value.accent { color: var(--accent); }
+        .stat-sub { color: var(--text-dim); font-size: 0.72rem; margin-top: 0.15rem; }
+
+        /* ─── Tabs ─────────────────────────────── */
+        .tabs {
+            display: flex;
+            gap: 0.25rem;
+            background: var(--card);
+            border-radius: 12px;
+            padding: 0.3rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+        .tab {
+            flex: 1;
+            padding: 0.65rem 1rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: var(--text-dim);
+            font-size: 0.88rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+        .tab.active { color: white; background: var(--accent); }
+
+        /* ─── Panels ───────────────────────────── */
+        .panel { display: none; animation: fadeIn 0.2s; }
+        .panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ─── Cards ────────────────────────────── */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+        }
+        .card-title { font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+
+        /* ─── Provider Card ────────────────────── */
+        .provider-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 0.75rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        .provider-card:hover { border-color: var(--border-active); background: var(--card-hover); }
+        .provider-card.connected { border-left: 3px solid var(--green); }
+        .provider-card.disconnected { border-left: 3px solid var(--text-dim); opacity: 0.8; }
+        .provider-card.error { border-left: 3px solid var(--red); }
+
+        .prov-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+        .prov-info { min-width: 0; }
+        .prov-name { font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .prov-desc { color: var(--text-dim); font-size: 0.82rem; margin-top: 0.15rem; }
+        .prov-models { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.4rem; }
+        .prov-model {
+            background: rgba(99,102,241,0.08);
+            color: var(--accent);
+            padding: 0.15rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .prov-free {
+            background: var(--green-bg);
+            color: var(--green);
+            padding: 0.15rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .prov-actions { display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end; }
+
+        .prov-status-badge {
+            padding: 0.3rem 0.7rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-align: center;
+            min-width: 100px;
+        }
+        .badge-connected { background: var(--green-bg); color: var(--green); }
+        .badge-disconnected { background: var(--yellow-bg); color: var(--yellow); }
+        .badge-error { background: var(--red-bg); color: var(--red); }
+        .badge-testing { background: rgba(99,102,241,0.1); color: var(--accent); }
+
+        /* ─── Buttons ──────────────────────────── */
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            white-space: nowrap;
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); }
+        .btn-success { background: var(--green); color: white; }
+        .btn-success:hover:not(:disabled) { filter: brightness(1.1); }
+        .btn-outline {
+            background: transparent;
+            color: var(--text-mid);
+            border: 1px solid var(--border);
+        }
+        .btn-outline:hover:not(:disabled) { border-color: var(--text-mid); color: var(--text); }
+        .btn-danger { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+        .btn-danger:hover:not(:disabled) { background: rgba(239,68,68,0.15); }
+        .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
+        .btn-lg { padding: 0.7rem 1.5rem; font-size: 0.95rem; }
+        .btn-full { width: 100%; justify-content: center; }
+
+        /* ─── Input ────────────────────────────── */
+        .input-row { display: flex; gap: 0.5rem; align-items: center; }
+        .form-group { margin-bottom: 0.85rem; }
+        .form-label { display: block; font-size: 0.82rem; color: var(--text-dim); font-weight: 500; margin-bottom: 0.3rem; }
+        .form-input {
+            width: 100%; padding: 0.6rem 0.85rem;
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 8px; color: var(--text);
+            font-size: 0.88rem; font-family: inherit;
+            transition: all 0.2s;
+        }
+        .form-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+        .form-input::placeholder { color: var(--text-dim); }
+
+        /* ─── Key Input Row ────────────────────── */
+        .key-row {
+            display: grid;
+            grid-template-columns: 200px 1fr auto;
+            gap: 0.75rem;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .key-row:last-child { border-bottom: none; }
+        .key-name { font-weight: 600; font-size: 0.9rem; }
+        .key-env { color: var(--text-dim); font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; }
+
+        /* ─── Setup Code Block ─────────────────── */
+        .code-block {
+            background: #0a0a12;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.1rem 1.3rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #a5b4fc;
+            position: relative;
+            overflow-x: auto;
+            line-height: 1.7;
+        }
+        .code-block .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+        }
+
+        /* ─── Steps ────────────────────────────── */
+        .step {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+        }
+        .step-num {
+            width: 32px; height: 32px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .step-num.done { background: var(--green); }
+        .step-content { flex: 1; }
+        .step-title { font-weight: 700; margin-bottom: 0.25rem; }
+        .step-desc { color: var(--text-dim); font-size: 0.85rem; }
+
+        /* ─── Doctor ───────────────────────────── */
+        .doctor-item {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.4rem;
+        }
+        .doctor-ok { background: var(--green-bg); }
+        .doctor-warn { background: var(--yellow-bg); }
+        .doctor-err { background: var(--red-bg); }
+
+        /* ─── Toast ────────────────────────────── */
+        .toast-container {
+            position: fixed; bottom: 1.5rem; right: 1.5rem;
+            z-index: 1000; display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .toast {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 0.8rem 1.2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            transform: translateX(120%);
+            animation: slideIn 0.3s forwards;
+            max-width: 350px;
+        }
+        .toast.success { border: 1px solid var(--green); color: var(--green); }
+        .toast.error { border: 1px solid var(--red); color: var(--red); }
+        .toast.info { border: 1px solid var(--accent); color: var(--accent); }
+        @keyframes slideIn { to { transform: translateX(0); } }
+
+        /* ─── Empty State ──────────────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-dim);
+        }
+        .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+        .empty-state .title { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+
+        /* ─── Responsive ───────────────────────── */
+        @media (max-width: 768px) {
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            .provider-card { grid-template-columns: 1fr; }
+            .prov-actions { flex-direction: row; align-items: center; }
+            .key-row { grid-template-columns: 1fr; }
+            .header { padding: 0.75rem 1rem; }
+            .container { padding: 1rem; }
+            .tabs { overflow-x: auto; }
+            .tab { white-space: nowrap; flex: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <div class="logo">
+        <div class="logo-icon">🔀</div>
+        <div>
+            <div class="logo-text">RouterAI</div>
+            <div class="logo-sub">รวม AI ฟรีจากหลายที่มาไว้ที่เดียว</div>
+        </div>
+    </div>
+    <div class="header-actions">
+        <div id="headerStatus" class="status-pill pill-yellow">
+            <span class="pill-dot yellow"></span>
+            กำลังเชื่อมต่อ...
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-label">📡 Provider ที่เชื่อมต่อแล้ว</div>
+            <div class="stat-value green" id="statConnected">-</div>
+            <div class="stat-sub" id="statConnectedSub">จากทั้งหมด - ตัว</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">📊 คำขอทั้งหมด</div>
+            <div class="stat-value accent" id="statRequests">0</div>
+            <div class="stat-sub">ตั้งแต่เริ่มระบบ</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">🔤 Token ที่ใช้ไป</div>
+            <div class="stat-value" id="statTokens">0</div>
+            <div class="stat-sub">token ทั้งหมด</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">⚡ เวลาทำงาน</div>
+            <div class="stat-value" id="statUptime">0s</div>
+            <div class="stat-sub">uptime</div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" data-tab="providers">🔧 Provider</button>
+        <button class="tab" data-tab="keys">🔑 ใส่ API Key</button>
+        <button class="tab" data-tab="openclaw">🔌 เชื่อม OpenClaw</button>
+        <button class="tab" data-tab="doctor">🩺 ตรวจสอบ</button>
+    </div>
+
+    <!-- ═══ PROVIDERS PANEL ═══ -->
+    <div id="panel-providers" class="panel active">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">🔧 สถานะ Provider ทั้งหมด</div>
+                <button class="btn btn-primary btn-sm" onclick="testAllProviders()">🔄 ทดสอบทั้งหมด</button>
+            </div>
+            <p style="color:var(--text-dim);font-size:0.82rem;margin-bottom:1rem;">
+                ✅ สีเขียว = เชื่อมต่อแล้ว &nbsp;|&nbsp; ⚠️ สีเหลือง = ยังไม่ใส่ Key &nbsp;|&nbsp; ❌ สีแดง = Key ใช้ไม่ได้
+            </p>
+            <div id="providersList">กำลังโหลด...</div>
+        </div>
+    </div>
+
+    <!-- ═══ KEYS PANEL ═══ -->
+    <div id="panel-keys" class="panel">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">🔑 ใส่ API Key</div>
+                <button class="btn btn-success btn-sm" onclick="saveAllKeys()">💾 บันทึกทั้งหมด</button>
+            </div>
+            <p style="color:var(--text-dim);font-size:0.82rem;margin-bottom:1rem;">
+                🔒 API Key จะถูกเก็บเฉพาะในเครื่องคุณเท่านั้น ไม่มีการส่งข้อมูลให้ใคร<br>
+                💡 แนะนำ: สมัคร <strong>Groq</strong> ก่อน (เร็วสุด ฟรี) → <a href="https://console.groq.com/keys" target="_blank" style="color:var(--accent)">console.groq.com/keys</a>
+            </p>
+            <div id="keysForm">กำลังโหลด...</div>
+            <div style="margin-top:1rem;display:flex;gap:0.5rem;">
+                <button class="btn btn-success btn-lg" onclick="saveAllKeys()">💾 บันทึก API Key ทั้งหมด</button>
+                <button class="btn btn-outline btn-lg" onclick="testAllProviders()">🧪 ทดสอบทันที</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ OPENCLAW PANEL ═══ -->
+    <div id="panel-openclaw" class="panel">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">🔌 เชื่อมต่อกับ OpenClaw</div>
+            </div>
+
+            <div class="step">
+                <div class="step-num" id="step1">1</div>
+                <div class="step-content">
+                    <div class="step-title">ใส่ API Key อย่างน้อย 1 ตัว</div>
+                    <div class="step-desc">ไปที่แท็บ "🔑 ใส่ API Key" แล้วใส่ Key อย่างน้อย 1 ตัว (แนะนำ Groq)</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num" id="step2">2</div>
+                <div class="step-content">
+                    <div class="step-title">RouterAI Proxy ต้องกำลังรันอยู่</div>
+                    <div class="step-desc">Proxy ที่ port 8900 ต้องทำงานอยู่ — รัน: <code>python src/proxy.py</code></div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num" id="step3">3</div>
+                <div class="step-content">
+                    <div class="step-title">กดปุ่มเชื่อมต่ออัตโนมัติ</div>
+                    <div class="step-desc">กดปุ่มด้านล่าง ระบบจะตั้งค่า OpenClaw ให้อัตโนมัติ</div>
+                </div>
+            </div>
+
+            <div style="text-align:center;margin:1.5rem 0;">
+                <button class="btn btn-success btn-lg" onclick="applyOpenClawConfig()" style="font-size:1.1rem;padding:0.9rem 2rem;">
+                    ⚡ เชื่อมต่อ OpenClaw อัตโนมัติ
+                </button>
+                <p style="color:var(--text-dim);font-size:0.78rem;margin-top:0.5rem;">
+                    กดปุ่มนี้ → ระบบจะแก้ <code>~/.openclaw/openclaw.json</code> ให้อัตโนมัติ
+                </p>
+            </div>
+
+            <div class="card-title" style="margin-top:1.5rem;">📋 หรือตั้งค่าเอง (ถ้าปุ่มไม่ทำงาน)</div>
+            <p style="color:var(--text-dim);font-size:0.82rem;margin-bottom:0.5rem;">
+                คัดลอกโค้ดด้านล่าง แล้ววางใน <code>~/.openclaw/openclaw.json</code>
+            </p>
+            <div class="code-block" id="configCode">
+{
+  "llm": {
+    "provider": "openai",
+    "baseUrl": "http://127.0.0.1:8900/v1",
+    "apiKey": "routerai",
+    "model": "groq/llama-3.3-70b-versatile"
+  }
+}
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="copyConfig()" style="margin-top:0.5rem;">📋 คัดลอก Config</button>
+
+            <div class="card-title" style="margin-top:1.5rem;">🔄 รีสตาร์ท OpenClaw</div>
+            <p style="color:var(--text-dim);font-size:0.82rem;margin-bottom:0.5rem;">
+                หลังจากตั้งค่าแล้ว ต้องรีสตาร์ท OpenClaw:
+            </p>
+            <div class="code-block">openclaw restart</div>
+
+            <div id="openclawStatus" style="margin-top:1rem;"></div>
+        </div>
+    </div>
+
+    <!-- ═══ DOCTOR PANEL ═══ -->
+    <div id="panel-doctor" class="panel">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">🩺 ตรวจสอบปัญหาระบบ</div>
+                <button class="btn btn-primary btn-sm" onclick="runDoctor()">🔍 เริ่มตรวจสอบ</button>
+            </div>
+            <div id="doctorResults">
+                <div class="empty-state">
+                    <div class="icon">🩺</div>
+                    <div class="title">กด "เริ่มตรวจสอบ" เพื่อเช็คสถานะทั้งหมด</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="toast-container" id="toasts"></div>
+
+<script>
+const API_BASE = '';  // Same origin (dashboard serves all APIs)
+
+// ─── Toast ──────────────────────────────────────────
+function toast(msg, type = 'info', duration = 3500) {
+    const container = document.getElementById('toasts');
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.textContent = msg;
+    container.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, duration);
+}
+
+// ─── Tab Switching ──────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    });
+});
+
+// ─── Copy Config ───────────────────────────────────
+function copyConfig() {
+    const code = document.getElementById('configCode').textContent;
+    navigator.clipboard.writeText(code.trim()).then(() => toast('✅ คัดลอก Config แล้ว!')).catch(() => toast('❌ คัดลอกไม่สำเร็จ'));
+}
+
+// ─── Format Uptime ─────────────────────────────────
+function formatUptime(seconds) {
+    if (seconds < 60) return seconds + 's';
+    if (seconds < 3600) return Math.floor(seconds/60) + 'm';
+    return Math.floor(seconds/3600) + 'h ' + Math.floor((seconds%3600)/60) + 'm';
+}
+
+// ─── Fetch Status ──────────────────────────────────
+async function fetchStatus() {
+    try {
+        const resp = await fetch('/api/status');
+        const data = await resp.json();
+
+        const connected = data.healthy_count || 0;
+        const total = data.total_providers || 0;
+        document.getElementById('statConnected').textContent = `${connected}/${total}`;
+        document.getElementById('statConnectedSub').textContent = `จากทั้งหมด ${total} ตัว`;
+        document.getElementById('statRequests').textContent = (data.total_requests || 0).toLocaleString();
+        document.getElementById('statTokens').textContent = (data.total_tokens || 0).toLocaleString();
+        document.getElementById('statUptime').textContent = formatUptime(data.uptime_seconds || 0);
+
+        const badge = document.getElementById('headerStatus');
+        if (connected > 0) {
+            badge.className = 'status-pill pill-green';
+            badge.innerHTML = `<span class="pill-dot green"></span>${connected} Provider พร้อมใช้งาน`;
+        } else {
+            badge.className = 'status-pill pill-yellow';
+            badge.innerHTML = `<span class="pill-dot yellow"></span>ยังไม่ได้ใส่ API Key`;
+        }
+
+        // Update setup steps
+        document.getElementById('step1').className = 'step-num' + (data.configured_count > 0 ? ' done' : '');
+        document.getElementById('step2').className = 'step-num done'; // If we got here, proxy is running
+    } catch (e) {
+        const badge = document.getElementById('headerStatus');
+        badge.className = 'status-pill pill-red';
+        badge.innerHTML = `<span class="pill-dot red"></span>ไม่สามารถเชื่อมต่อ Proxy ได้`;
+    }
+}
+
+// ─── Fetch Providers ───────────────────────────────
+async function fetchProviders() {
+    try {
+        const resp = await fetch('/api/providers');
+        const data = await resp.json();
+        const list = document.getElementById('providersList');
+
+        if (!data.providers || data.providers.length === 0) {
+            list.innerHTML = '<div class="empty-state"><div class="icon">🔧</div><div class="title">ไม่พบ Provider</div></div>';
+            return;
+        }
+
+        const icons = {
+            groq: '⚡', gemini: '🟢', cerebras: '🚀', openrouter: '🌐',
+            mistral: '🟣', nvidia: '🔵', deepseek: '💎', together: '🤝',
+            siliconflow: '🇨🇳', ollama: '🏠', mimo: '🧠'
+        };
+        const colors = {
+            groq: '#f97316', gemini: '#3b82f6', cerebras: '#ef4444', openrouter: '#6366f1',
+            mistral: '#a855f7', nvidia: '#22c55e', deepseek: '#06b6d4', together: '#f59e0b',
+            siliconflow: '#ec4899', ollama: '#8b5cf6', mimo: '#f97316'
+        };
+
+        list.innerHTML = data.providers.map(p => {
+            let statusBadge, cardClass;
+            if (!p.configured && p.requires_key) {
+                statusBadge = `<div class="prov-status-badge badge-disconnected">⚠️ ยังไม่ใส่ Key</div>`;
+                cardClass = 'disconnected';
+            } else if (p.tested && !p.healthy) {
+                statusBadge = `<div class="prov-status-badge badge-error">❌ ${p.last_error || 'ใช้ไม่ได้'}</div>`;
+                cardClass = 'error';
+            } else if (p.tested && p.healthy) {
+                statusBadge = `<div class="prov-status-badge badge-connected">✅ เชื่อมต่อแล้ว (${p.avg_latency_ms}ms)</div>`;
+                cardClass = 'connected';
+            } else if (p.configured) {
+                statusBadge = `<div class="prov-status-badge badge-disconnected">🔑 ใส่ Key แล้ว (ยังไม่ได้ทดสอบ)</div>`;
+                cardClass = 'disconnected';
+            } else {
+                statusBadge = `<div class="prov-status-badge badge-disconnected">➖ ยังไม่ตั้งค่า</div>`;
+                cardClass = 'disconnected';
+            }
+
+            const freeTag = p.is_free ? '<span class="prov-free">💰 ฟรี</span>' : '';
+            const testBtn = p.configured ? `<button class="btn btn-outline btn-sm" onclick="testProvider('${p.id}', this)">🧪 ทดสอบ</button>` : '';
+            const signupBtn = !p.configured && p.requires_key && p.signup_link ?
+                `<a href="${p.signup_link}" target="_blank" class="btn btn-primary btn-sm">🔑 สมัคร/รับ Key</a>` : '';
+
+            return `
+                <div class="provider-card ${cardClass}">
+                    <div class="prov-icon" style="background:${colors[p.id] || '#666'}22;color:${colors[p.id] || '#666'}">
+                        ${icons[p.id] || '🤖'}
+                    </div>
+                    <div class="prov-info">
+                        <div class="prov-name">${p.name} ${freeTag}</div>
+                        <div class="prov-desc">${p.description || p.free_tier || ''}</div>
+                        <div class="prov-models">
+                            ${p.models.slice(0,3).map(m => `<span class="prov-model">${m}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="prov-actions">
+                        ${statusBadge}
+                        <div style="display:flex;gap:0.35rem;">
+                            ${testBtn}
+                            ${signupBtn}
+                        </div>
+                    </div>
+                </div>`;
+        }).join('');
+    } catch (e) {
+        document.getElementById('providersList').innerHTML = '<p style="color:var(--red)">❌ โหลดข้อมูลไม่ได้</p>';
+    }
+}
+
+// ─── Fetch Keys ────────────────────────────────────
+async function fetchKeys() {
+    try {
+        const resp = await fetch('/api/providers');
+        const data = await resp.json();
+        const form = document.getElementById('keysForm');
+
+        const providersWithKeys = data.providers.filter(p => p.env_key && p.requires_key);
+
+        form.innerHTML = providersWithKeys.map(p => {
+            const hasKey = p.configured;
+            return `
+                <div class="key-row">
+                    <div>
+                        <div class="key-name">${p.name}</div>
+                        <div class="key-env">${p.env_key}</div>
+                        <a href="${p.signup_link}" target="_blank" style="color:var(--accent);font-size:0.72rem;">สมัครที่นี่ →</a>
+                    </div>
+                    <div>
+                        <input type="password" class="form-input key-input" data-key="${p.env_key}"
+                            placeholder="ใส่ API Key สำหรับ ${p.name}"
+                            value="${hasKey ? '••••••••••••' : ''}">
+                    </div>
+                    <div style="display:flex;gap:0.35rem;">
+                        ${hasKey ? '<span class="prov-status-badge badge-connected" style="font-size:0.7rem;">✅ ใส่แล้ว</span>' : '<span class="prov-status-badge badge-disconnected" style="font-size:0.7rem;">❌ ยังไม่ใส่</span>'}
+                    </div>
+                </div>`;
+        }).join('');
+    } catch (e) {
+        document.getElementById('keysForm').innerHTML = '<p style="color:var(--red)">❌ โหลดข้อมูลไม่ได้</p>';
+    }
+}
+
+// ─── Save Keys ─────────────────────────────────────
+async function saveAllKeys() {
+    const inputs = document.querySelectorAll('.key-input');
+    const keys = {};
+    let count = 0;
+    inputs.forEach(inp => {
+        const val = inp.value.trim();
+        if (val && !val.startsWith('•')) {
+            keys[inp.dataset.key] = val;
+            count++;
+        }
+    });
+    if (count === 0) {
+        toast('⚠️ กรุณาใส่ API Key อย่างน้อย 1 ตัว', 'error');
+        return;
+    }
+    try {
+        const resp = await fetch('/api/keys', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(keys)
+        });
+        const data = await resp.json();
+        toast(`✅ บันทึก ${count} API Key แล้ว! กด "ทดสอบทันที" เพื่อเช็ค`, 'success');
+        fetchAll();
+    } catch (e) {
+        toast('❌ บันทึกไม่สำเร็จ: ' + e.message, 'error');
+    }
+}
+
+// ─── Test Provider ─────────────────────────────────
+async function testProvider(provId, btnEl) {
+    if (btnEl) {
+        btnEl.disabled = true;
+        btnEl.innerHTML = '⏳ ทดสอบ...';
+    }
+    try {
+        const resp = await fetch(`/api/test/${provId}`, { method: 'POST' });
+        const data = await resp.json();
+        if (data.success) {
+            toast(`✅ ${provId}: ใช้งานได้! (${data.latency_ms}ms)`, 'success');
+        } else {
+            toast(`❌ ${provId}: ${data.error}`, 'error', 5000);
+        }
+        fetchAll();
+    } catch (e) {
+        toast(`❌ ${provId}: ทดสอบล้มเหลว`, 'error');
+    }
+    if (btnEl) {
+        btnEl.disabled = false;
+        btnEl.innerHTML = '🧪 ทดสอบ';
+    }
+}
+
+// ─── Test All ──────────────────────────────────────
+async function testAllProviders() {
+    toast('🔄 กำลังทดสอบทุก Provider...', 'info');
+    try {
+        const resp = await fetch('/api/test-all', { method: 'POST' });
+        const data = await resp.json();
+        const ok = data.results.filter(r => r.success).length;
+        const fail = data.results.filter(r => !r.success).length;
+        if (fail === 0) {
+            toast(`✅ ทดสอบเสร็จ: ${ok} ตัวใช้ได้ทั้งหมด!`, 'success');
+        } else {
+            toast(`⚠️ ${ok} ตัวใช้ได้, ${fail} ตัวมีปัญหา — ดูรายละเอียดในแท็บ Provider`, 'error', 5000);
+        }
+        // Show individual results
+        data.results.forEach(r => {
+            if (!r.success) {
+                toast(`❌ ${r.provider}: ${r.error}`, 'error', 4000);
+            }
+        });
+        fetchAll();
+    } catch (e) {
+        toast('❌ ทดสอบไม่สำเร็จ', 'error');
+    }
+}
+
+// ─── Apply OpenClaw Config ─────────────────────────
+async function applyOpenClawConfig() {
+    if (!confirm('⚠️ ระบบจะแก้ไขไฟล์ ~/.openclaw/openclaw.json อัตโนมัติ\n(สำรองไฟล์เดิมเป็น .json.bak)\n\nดำเนินการต่อ?')) return;
+
+    try {
+        const resp = await fetch('/api/openclaw/apply', { method: 'POST' });
+        const data = await resp.json();
+        if (data.success) {
+            toast('✅ ตั้งค่า OpenClaw สำเร็จ! รัน "openclaw restart" เพื่อใช้งาน', 'success', 6000);
+            // Update config display
+            if (data.new_config && data.new_config.llm) {
+                const cfg = data.new_config.llm;
+                document.getElementById('configCode').textContent = JSON.stringify({llm: cfg}, null, 2);
+            }
+            document.getElementById('step3').className = 'step-num done';
+        } else {
+            toast('❌ ตั้งค่าไม่สำเร็จ: ' + (data.detail || ''), 'error');
+        }
+    } catch (e) {
+        toast('❌ ไม่สามารถเชื่อมต่อได้: ' + e.message, 'error');
+    }
+}
+
+// ─── Doctor ────────────────────────────────────────
+async function runDoctor() {
+    const div = document.getElementById('doctorResults');
+    div.innerHTML = '<p style="color:var(--accent);padding:1rem;">🔍 กำลังตรวจสอบทุกส่วน...</p>';
+    try {
+        const resp = await fetch('/api/doctor');
+        const data = await resp.json();
+        div.innerHTML = `
+            <div style="text-align:center;padding:1rem;">
+                <div style="font-size:2rem;font-weight:800;color:${data.status === 'healthy' ? 'var(--green)' : 'var(--red)'}">
+                    ${data.healthy_providers}/${data.total_providers}
+                </div>
+                <div style="color:var(--text-dim);font-size:0.85rem;">Provider ที่ใช้ได้</div>
+            </div>
+            ${data.details.map(d => {
+                const cls = d.status === 'ok' ? 'doctor-ok' : d.status === 'warning' ? 'doctor-warn' : 'doctor-err';
+                return `<div class="doctor-item ${cls}"><strong>${d.name}</strong> ${d.message}</div>`;
+            }).join('')}`;
+    } catch (e) {
+        div.innerHTML = '<p style="color:var(--red);padding:1rem;">❌ ตรวจสอบไม่ได้ — ตรวจสอบว่า Proxy กำลังรันอยู่ที่ port 8900</p>';
+    }
+}
+
+// ─── Init & Refresh ────────────────────────────────
+function fetchAll() {
+    fetchStatus();
+    fetchProviders();
+    fetchKeys();
+}
+
+fetchAll();
+setInterval(fetchAll, 15000);
+</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  routerai-proxy:
+    build: .
+    container_name: routerai-proxy
+    ports:
+      - "8900:8900"
+    volumes:
+      - ./:/app
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - CEREBRAS_API_KEY=${CEREBRAS_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY:-}
+      - NVIDIA_API_KEY=${NVIDIA_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - TOGETHER_API_KEY=${TOGETHER_API_KEY:-}
+      - SILICONFLOW_API_KEY=${SILICONFLOW_API_KEY:-}
+    command: python src/proxy.py --host 0.0.0.0 --port 8900
+    restart: unless-stopped
+
+  routerai-dashboard:
+    build: .
+    container_name: routerai-dashboard
+    ports:
+      - "8899:8899"
+    volumes:
+      - ./:/app
+    command: python src/dashboard.py --host 0.0.0.0 --port 8899
+    restart: unless-stopped
+    depends_on:
+      - routerai-proxy
