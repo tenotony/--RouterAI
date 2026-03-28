@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  openclaw-thai-dashboard:
+    build: .
+    container_name: openclaw-thai-dashboard
+    ports:
+      - "8877:8877"  # Dashboard
+      - "8876:8876"  # API Proxy
+    volumes:
+      - ./config:/app/config
+      - ${OPENCLAW_HOME:-~/.openclaw}:/root/.openclaw:ro
+    env_file:
+      - ./config/.env
+    restart: unless-stopped
