@@ -12,8 +12,8 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
-REPO_URL="https://github.com/YOUR_USERNAME/openclaw-thai-dashboard.git"
-INSTALL_DIR="$HOME/openclaw-thai-dashboard"
+REPO_URL="https://github.com/tenotony/--RouterAI.git"
+INSTALL_DIR="$HOME/routerai"
 
 echo ""
 echo -e "${CYAN}╔══════════════════════════════════════════════╗${NC}"

@@ -16,17 +16,40 @@
 
 ## 🚀 ติดตั้ง
 
-```bash
-# One-line install
-curl -fsSL https://raw.githubusercontent.com/tenotony/openclaw-thai-dashboard/main/scripts/install.sh | bash
+> ⚠️ **สำคัญ:** อย่า clone เป็นชื่อ `--RouterAI` เพราะ `--` ทำให้ shell สับสน ให้ตั้งชื่อเป็น `routerai`
 
-# หรือ manual
-git clone https://github.com/tenotony/openclaw-thai-dashboard.git
-cd openclaw-thai-dashboard
+### Linux / Mac
+
+```bash
+# Clone เป็นชื่อ routerai (ไม่ใช่ --RouterAI)
+git clone https://github.com/tenotony/--RouterAI.git routerai
+cd routerai
+
+# ติดตั้ง
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
+
+# ใส่ API Key
+cp .env.example .env
+nano .env   # ใส่ GROQ_API_KEY=xxxxx
+
+# รัน
 python src/proxy.py
 ```
+
+### Docker
+
+```bash
+git clone https://github.com/tenotony/--RouterAI.git routerai
+cd routerai
+cp .env.example .env
+nano .env   # ใส่ GROQ_API_KEY
+docker compose up -d --build
+```
+
+### Windows
+
+ดาวน์โหลดไฟล์ `setup.bat` แล้วรันได้เลย
 
 ## 📱 ใช้งาน
 
