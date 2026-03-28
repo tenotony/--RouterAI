@@ -1,31 +1,24 @@
-# RouterAI - Smart API Router for OpenClaw
+# 🔀 RouterAI
 
-รวม AI ฟรีจากหลายที่มาไว้ที่เดียว สลับอัตโนมัติเมื่อตัวไหนหมดโควต้า
+**รวม AI ฟรีจากหลายที่มาไว้ที่เดียว** — สลับอัตโนมัติเมื่อตัวไหนหมดโควต้า
 
 OpenAI-compatible API proxy ใช้แทน OpenAI endpoint ได้เลย สำหรับ OpenClaw, ChatGPT-like apps, หรือโปรแกรมอะไรก็ได้ที่รองรับ OpenAI API
 
-## ⚡ ติดตั้งภายใน 1 นาที
+---
 
-### วิธีที่ 1: One-Line Install (แนะนำ)
+## 🚀 ติดตั้งด้วย Docker (แนะนำ!)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/tenotony/RouterAI/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/tenotony/RouterAI/main/scripts/install-docker.sh | bash
 ```
 
 สคริปต์จะ:
-- ✅ ตรวจสอบและติดตั้ง Git, Python, pip อัตโนมัติ (ถ้ายังไม่มี)
+- ✅ ตรวจสอบและติดตั้ง Docker อัตโนมัติ (ถ้ายังไม่มี)
 - ✅ ดาวน์โหลดโค้ด
-- ✅ สร้าง Virtual Environment
-- ✅ ติดตั้ง Python packages
-- ✅ สร้าง config files
+- ✅ สร้างไฟล์ตั้งค่า
+- ✅ เริ่มระบบด้วย Docker Compose
 
-### วิธีที่ 2: Windows
-
-ดาวน์โหลดไฟล์ [setup.bat](scripts/setup.bat) แล้วดับเบิลคลิก
-
-ต้องมี Python 3.10+ ติดตั้งก่อน → [ดาวน์โหลดที่นี่](https://www.python.org/downloads/)
-
-### วิธีที่ 3: Docker
+## 🪟 Windows
 
 ```bash
 git clone https://github.com/tenotony/RouterAI.git
@@ -33,37 +26,19 @@ cd RouterAI
 docker compose up -d
 ```
 
-## 🚀 เริ่มใช้งาน
+ต้องมี Docker Desktop ติดตั้งก่อน → [ดาวน์โหลดที่นี่](https://www.docker.com/products/docker-desktop/)
+
+## 🐧 Linux / macOS (ไม่ใช้ Docker)
 
 ```bash
+git clone https://github.com/tenotony/RouterAI.git
 cd RouterAI
+python3 -m venv venv
 source venv/bin/activate
-
-# ดูสถานะระบบ
-python routerai status
-
-# ตัวช่วยตั้งค่า (Interactive Wizard)
-python routerai setup
-
-# ตรวจสอบปัญหา
-python routerai doctor
-
-# จัดการ Budget
-python routerai budget enable    # เปิด Budget
-python routerai budget set 5.00  # จำกัด $5/วัน
-python routerai budget show      # ดูสถานะ
-
-# จัดการ Cache
-python routerai cache show       # ดูสถิติ
-python routerai cache clear      # ล้าง cache
+pip install -r requirements.txt
 ```
 
-## 🏃‍♂️ รัน RouterAI
-
 ```bash
-cd RouterAI
-source venv/bin/activate
-
 # Terminal 1: รัน Proxy (API ที่ port 8900)
 python src/proxy.py
 
@@ -71,18 +46,26 @@ python src/proxy.py
 python src/dashboard.py
 ```
 
-Dashboard: http://127.0.0.1:8899
+Dashboard: [http://127.0.0.1:8899](http://127.0.0.1:8899)
+
+## 📊 หน้า Dashboard
+
+เปิด [http://localhost:8899](http://localhost:8899) หลังติดตั้งเสร็จ:
+
+| แท็บ | หน้าที่ |
+|------|---------|
+| 🔧 **Provider** | ดูสถานะทุก Provider ที่มี |
+| 🔑 **ใส่ API Key** | กรอก Key สำหรับแต่ละเจ้า |
+| 🔌 **เชื่อม OpenClaw** | ตั้งค่า OpenClaw อัตโนมัติ |
+| 🩺 **ตรวจสอบ** | วิเคราะห์ปัญหาในระบบ |
 
 ## 🔌 เชื่อมต่อกับ OpenClaw
 
-### วิธีที่ 1: ผ่าน Setup Wizard (แนะนำ)
-```bash
-python routerai setup
-```
+1. ใส่ API Key อย่างน้อย 1 ตัว (แนะนำ Groq)
+2. Dashboard → แท็บ "เชื่อม OpenClaw" → กดปุ่ม ⚡
+3. รัน `openclaw restart`
 
-### วิธีที่ 2: แก้เอง
-
-แก้ `~/.openclaw/openclaw.json`:
+หรือแก้ไข `~/.openclaw/openclaw.json` เอง:
 
 ```json
 {
@@ -99,36 +82,40 @@ python routerai setup
 
 | Provider | ลิงก์สมัคร | ทำไมต้องสมัคร | ความเร็ว |
 |----------|-----------|--------------|---------|
-| ⚡ Groq | [console.groq.com/keys](https://console.groq.com/keys) | เร็วสุดๆ ~300ms | ⭐⭐⭐⭐⭐ |
-| 🟢 Google Gemini | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | ฟรี 15 RPM, vision | ⭐⭐⭐⭐ |
-| 🚀 Cerebras | [cloud.cerebras.ai](https://cloud.cerebras.ai) | เร็วมาก | ⭐⭐⭐⭐⭐ |
-| 🌐 OpenRouter | [openrouter.ai/settings/keys](https://openrouter.ai/settings/keys) | โมเดลฟรีเยอะ | ⭐⭐⭐ |
-| 🟣 Mistral | [console.mistral.ai](https://console.mistral.ai/api-keys/) | Mistral models | ⭐⭐⭐ |
-| 🔵 NVIDIA | [build.nvidia.com](https://build.nvidia.com/explore/discover) | Llama ฟรี | ⭐⭐⭐ |
-| 💎 DeepSeek | [platform.deepseek.com](https://platform.deepseek.com) | คุณภาพสูง | ⭐⭐⭐⭐ |
-| 🇨🇳 SiliconFlow | [cloud.siliconflow.cn](https://cloud.siliconflow.cn) | Qwen ฟรี | ⭐⭐⭐ |
-| 🤖 Ollama | [ollama.com](https://ollama.com) | รัน Local ฟรี | ⭐⭐⭐⭐ |
+| ⚡ **Groq** | [console.groq.com/keys](https://console.groq.com/keys) | เร็วสุดๆ ~300ms | ⭐⭐⭐⭐⭐ |
+| 🟢 **Google Gemini** | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | ฟรี 15 RPM, vision | ⭐⭐⭐⭐ |
+| 🚀 **Cerebras** | [cloud.cerebras.ai](https://cloud.cerebras.ai) | เร็วมาก | ⭐⭐⭐⭐⭐ |
+| 🌐 **OpenRouter** | [openrouter.ai/settings/keys](https://openrouter.ai/settings/keys) | โมเดลฟรีเยอะ | ⭐⭐⭐ |
+| 🟣 **Mistral** | [console.mistral.ai](https://console.mistral.ai/api-keys/) | Mistral models | ⭐⭐⭐ |
+| 🔵 **NVIDIA** | [build.nvidia.com](https://build.nvidia.com/explore/discover) | Llama ฟรี | ⭐⭐⭐ |
+| 💎 **DeepSeek** | [platform.deepseek.com](https://platform.deepseek.com) | คุณภาพสูง | ⭐⭐⭐⭐ |
+| 🇨🇳 **SiliconFlow** | [cloud.siliconflow.cn](https://cloud.siliconflow.cn) | Qwen ฟรี | ⭐⭐⭐ |
+| 🤝 **Together AI** | [api.together.xyz](https://api.together.xyz/settings/api-keys) | $5 เครดิตฟรี | ⭐⭐⭐ |
+| 🏠 **Ollama** | [ollama.com](https://ollama.com) | รัน Local ฟรี | ⭐⭐⭐⭐ |
 
-**💡 แนะนำ: สมัครแค่ Groq ตัวเดียวก็เริ่มใช้ได้เลย!**
+> 💡 **แนะนำ**: สมัครแค่ **Groq** ตัวเดียวก็เริ่มใช้ได้เลย!
 
 ## 🔑 ใส่ API Key
 
 ใส่ Key ได้ 3 ทาง:
 
-1. **Setup Wizard** → `python routerai setup` (แนะนำ!)
-2. **Dashboard** → http://127.0.0.1:8899 → แท็บ "ใส่ API Key"
-3. **แก้ไฟล์** → เปิด `api_keys.json` แล้วใส่:
-```json
-{
-  "GROQ_API_KEY": "gsk_xxxxx",
-  "GOOGLE_API_KEY": "AIzaSyxxxxx",
-  "CEREBRAS_API_KEY": "csk-xxxxx"
-}
-```
+1. **Dashboard** (แนะนำ!) → http://localhost:8899 → แท็บ "ใส่ API Key"
+2. **แก้ไฟล์ .env** → เปิด `.env` แล้วใส่:
+   ```env
+   GROQ_API_KEY=gsk_xxxxx
+   GOOGLE_API_KEY=AIzaSyxxxxx
+   CEREBRAS_API_KEY=csk-xxxxx
+   ```
+3. **ไฟล์ api_keys.json** → เปิดแล้วใส่:
+   ```json
+   {
+     "GROQ_API_KEY": "gsk_xxxxx",
+     "GOOGLE_API_KEY": "AIzaSyxxxxx",
+     "CEREBRAS_API_KEY": "csk-xxxxx"
+   }
+   ```
 
-## 💰 Budget Control
-
-จำกัดค่าใช้จ่ายไม่ให้บานปลาย:
+## 💰 จำกัดค่าใช้จ่าย (Budget)
 
 ```bash
 # เปิดใช้งาน
@@ -146,51 +133,52 @@ python routerai budget show
 - **block** → หยุดรับ request
 - **warn** → แค่เตือน
 
-## 🏗️ โครงสร้าง
+## 🏗️ โครงสร้างโปรเจค
 
 ```
 RouterAI/
 ├── src/
 │   ├── proxy.py           # Main proxy server (OpenAI-compatible)
-│   ├── dashboard.py       # Web dashboard
+│   ├── dashboard.py       # Web dashboard server
 │   └── cli.py             # CLI commands
 ├── web/
 │   └── index.html         # Dashboard UI (ภาษาไทย)
 ├── scripts/
-│   ├── install.sh         # One-line installer
-│   └── setup.bat          # Windows setup
-├── routerai               # CLI shortcut
+│   ├── install.sh          # One-line installer (venv)
+│   ├── install-docker.sh   # One-line installer (Docker)
+│   └── setup.bat           # Windows setup
+├── routerai                # CLI shortcut
 ├── docker-compose.yml
 ├── Dockerfile
-├── providers.json         # Provider config
-├── api_keys.json          # API keys (เก็บเฉพาะเครื่อง)
+├── .env.example            # Environment template
+├── providers.json          # Provider config
 ├── requirements.txt
 └── README.md
 ```
 
-## 🔄 ระบบทำงานยังไง
+## ⚙️ หลักการทำงาน
 
 ```
 Request → RouterAI Proxy (port 8900)
  │
  ├─ 1) Response Cache Check
- │    └─ HIT → return cached response (ไม่เสียตังค์!)
+ │   └─ HIT → return cached response (ไม่เสียตังค์!)
  │
  ├─ 2) Budget Check
- │    └─ EXCEEDED → downgrade model / block
+ │   └─ EXCEEDED → downgrade model / block
  │
  ├─ 3) Smart Routing Engine
- │    ├─ Latency scoring
- │    ├─ Error tracking
- │    └─ Auto-failover
+ │   ├─ Latency scoring
+ │   ├─ Error tracking
+ │   └─ Auto-failover
  │
  ├─ 4) Provider Pool
- │    ├─ Groq (priority: 100)
- │    ├─ MiMo (priority: 98)
- │    ├─ Cerebras (priority: 95)
- │    ├─ Gemini (priority: 88)
- │    ├─ OpenRouter (priority: 85)
- │    └─ ...more providers
+ │   ├─ Groq (priority: 100)
+ │   ├─ Cerebras (priority: 95)
+ │   ├─ DeepSeek (priority: 90)
+ │   ├─ Gemini (priority: 88)
+ │   ├─ OpenRouter (priority: 85)
+ │   └─ ...more providers
  │
  └─ 5) Response → Cache it → Track cost → Return to Client
 ```
@@ -202,11 +190,20 @@ Request → RouterAI Proxy (port 8900)
 - ✅ API Key เก็บเฉพาะเครื่องคุณ
 - ✅ โค้ดเปิดทั้งหมด (MIT License)
 
-## 🤝 มีส่วนร่วม
+## 🐛 ปัญหาที่พบบ่อย
 
-- 🐛 พบบั๊ก → [เปิด Issue](https://github.com/tenotony/RouterAI/issues)
-- 💡 มีไอเดีย → [Pull Request](https://github.com/tenotony/RouterAI/pulls)
+| ปัญหา | วิธีแก้ |
+|-------|--------|
+| Docker ไม่เริ่ม | ตรวจสอบ Docker ติดตั้งแล้ว: `docker --version` |
+| Port ถูกใช้ | เปลี่ยน port ใน `docker-compose.yml` |
+| API Key ไม่ทำงาน | กด "ทดสอบ" ใน Dashboard เพื่อเช็ค |
+| OpenClaw เชื่อมไม่ได้ | รัน `openclaw restart` หลังตั้งค่า |
 
-## 📄 License
+## 🐛 พบบั๊ก?
 
-MIT — ใช้ฟรี แก้ไขได้ แจกต่อได้
+- [เปิด Issue](https://github.com/tenotony/RouterAI/issues)
+- [เข้ากลุ่ม Facebook](https://www.facebook.com/groups/1248346110734837)
+
+---
+
+**License**: MIT
