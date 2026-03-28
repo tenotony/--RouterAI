@@ -1,15 +1,14 @@
 version: "3.8"
-
 services:
-  openclaw-thai-dashboard:
+  routerai:
     build: .
     container_name: openclaw-thai-dashboard
     ports:
-      - "8877:8877"  # Dashboard
-      - "8876:8876"  # API Proxy
+      - "8900:8900"
+      - "8899:8899"
     volumes:
-      - ./config:/app/config
-      - ${OPENCLAW_HOME:-~/.openclaw}:/root/.openclaw:ro
+      - ./api_keys.json:/app/api_keys.json
+      - ${OPENCLAW_HOME:-~/.openclaw}:/root/.openclaw
     env_file:
-      - ./config/.env
+      - .env
     restart: unless-stopped

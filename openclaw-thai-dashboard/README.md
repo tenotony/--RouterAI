@@ -1,71 +1,96 @@
-# 🇹🇭 OpenClaw Thai Dashboard + API Router
+# 🇹🇭 RouterAI + OpenClaw Thai Dashboard
 
-รวม API ฟรีจากหลายเจ้ามาไว้ที่เดียว — สลับอัตโนมัติเมื่อตัวไหนหมดโควต้า พร้อม Dashboard ภาษาไทยสำหรับจัดการ OpenClaw
+รวม AI ฟรีจากหลายที่มาไว้ที่เดียว — สลับอัตโนมัติเมื่อตัวไหนหมดโควต้า พร้อม Dashboard ภาษาไทยสำหรับจัดการ OpenClaw
+
+> Based on [RouterAI](https://github.com/tenotony/--RouterAI) + [OpenClaw-bot-review](https://github.com/xmanrui/OpenClaw-bot-review) — enhanced with Thai UI and OpenClaw integration
 
 ## ✨ ฟีเจอร์
 
-- 🔀 **Smart API Router** — รวม API ฟรี 10+ เจ้า สลับอัตโนมัติ
-- 🇹🇭 **หน้าจอภาษาไทย** — UI ทั้งหมดเป็นภาษาไทย เข้าใจง่าย
-- 📊 **Dashboard** — ดูสถานะ Bot, Model, Session, Token ทั้งหมด
-- 💰 **ประหยัดเงิน** — Response Cache, Budget Control, Auto-downgrade
-- 🔒 **ปลอดภัย** — รันบนเครื่องคุณ ไม่ส่งข้อมูลให้ใคร
-- ⚡ **ติดตั้งง่าย** — คำสั่งเดียวจบ
+- 🔀 **Smart API Router** — รวม API ฟรี 11 เจ้า สลับอัตโนมัติ
+- 🇹🇭 **Dashboard ภาษาไทย** — หน้าจัดการสวยๆ เข้าใจง่าย
+- ⚡ **OpenClaw Integration** — กดปุ่มเดียวเชื่อม OpenClaw
+- 💾 **Response Cache** — ลด token consumption
+- 🩺 **Doctor** — ตรวจสอบปัญหาระบบ
+- 🔒 **ปลอดภัย** — รันบนเครื่องคุณ 100%
+- 🛠️ **CLI** — จัดการผ่าน Terminal ภาษาไทย
 
-## 🚀 ติดตั้ง (ต้องมี Python 3.8+)
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/openclaw-thai-dashboard/main/scripts/install.sh | bash
-```
-
-หรือติดตั้งเอง:
+## 🚀 ติดตั้ง
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/openclaw-thai-dashboard.git
+# One-line install
+curl -fsSL https://raw.githubusercontent.com/tenotony/openclaw-thai-dashboard/main/scripts/install.sh | bash
+
+# หรือ manual
+git clone https://github.com/tenotony/openclaw-thai-dashboard.git
 cd openclaw-thai-dashboard
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-python src/main.py
+python src/proxy.py
 ```
 
-## 📱 หน้าจอ
+## 📱 ใช้งาน
 
-- **Dashboard**: http://localhost:8877
-- **API Proxy**: http://localhost:8876
+- **API Proxy**: http://localhost:8900 (OpenAI-compatible)
+- **Dashboard**: http://localhost:8899/dashboard/
+- **CLI**: `./routerai status`
 
-## 🔧 ตั้งค่า OpenClaw ให้ใช้ Router
+### ขั้นตอน
 
-Dashboard → แท็บ "เชื่อม OpenClaw" → กดปุ่ม ⚡
+1. เปิด Dashboard → แท็บ API Keys → ใส่ Key (แนะนำ Groq)
+2. กด ⚡ "เชื่อม OpenClaw"
+3. รัน `openclaw restart`
 
-หรือแก้ `~/.openclaw/openclaw.json`:
+### CLI Commands
 
-```json
-{
-  "agents": {
-    "defaults": {
-      "model": {
-        "primary": "groq/llama-3.3-70b-versatile",
-        "fallbacks": ["gemini/gemini-2.0-flash", "openrouter/meta-llama/llama-3.1-70b-instruct:free"]
-      }
-    }
-  }
-}
+```bash
+./routerai status    # 📊 แสดงสถานะระบบ
+./routerai setup     # 🧙 ตัวช่วยตั้งค่า API Key
+./routerai doctor    # 🩺 ตรวจสอบปัญหา
+./routerai apply     # ⚡ ตั้งค่า OpenClaw อัตโนมัติ
+./routerai provider list  # 🔌 แสดง Provider ทั้งหมด
+./routerai provider free  # 🆓 แสดง Provider ฟรี
 ```
 
 ## 📋 Provider ที่รองรับ
 
-| Provider | ลิงก์สมัคร | ข้อดี |
-|----------|------------|-------|
-| ⚡ Groq | console.groq.com | เร็วสุด ~300ms |
-| 🟢 Gemini | aistudio.google.com | ฟรี 15 RPM, vision |
-| 🚀 Cerebras | cloud.cerebras.ai | เร็วมาก |
-| 🌐 OpenRouter | openrouter.ai | โมเดลฟรีเยอะ |
-| 🟣 Mistral | console.mistral.ai | Mistral models |
-| 🔵 NVIDIA | build.nvidia.com | Llama ฟรี |
-| 💎 DeepSeek | platform.deepseek.com | คุณภาพสูง |
-| 🇨🇳 SiliconFlow | cloud.siliconflow.cn | Qwen ฟรี |
-| 🤝 Together AI | api.together.xyz | $5 เครดิตฟรี |
-| 🏠 Ollama | ollama.com | รัน Local ฟรี |
+| Provider | ข้อดี | Free Tier | สมัคร |
+|----------|--------|-----------|-------|
+| ⚡ Groq | เร็วสุด ~300ms | ฟรี 30 RPM | [console.groq.com](https://console.groq.com/keys) |
+| 🧠 Xiaomi MiMo | คุณภาพสูง | ตามที่กำหนด | - |
+| 🚀 Cerebras | เร็วมาก | ฟรี 30 RPM | [cloud.cerebras.ai](https://cloud.cerebras.ai) |
+| 💎 DeepSeek | คุณภาพสูง | เครดิต $2 | [platform.deepseek.com](https://platform.deepseek.com) |
+| 🟢 Gemini | Vision | ฟรี 15 RPM | [aistudio.google.com](https://aistudio.google.com/apikey) |
+| 🌐 OpenRouter | โมเดลฟรีเยอะ | :free suffix | [openrouter.ai](https://openrouter.ai/settings/keys) |
+| 🟣 Mistral | Mistral models | ทดลองฟรี | [console.mistral.ai](https://console.mistral.ai/api-keys) |
+| 🔵 NVIDIA | Llama ฟรี | ฟรี 1000 req | [build.nvidia.com](https://build.nvidia.com) |
+| 🇨🇳 SiliconFlow | Qwen ฟรี | ฟรีหลายโมเดล | [cloud.siliconflow.cn](https://cloud.siliconflow.cn) |
+| 🤝 Together AI | $5 เครดิต | เครดิตฟรี | [api.together.xyz](https://api.together.xyz/settings/api-keys) |
+| 🏠 Ollama | Local 100% ฟรี | ไม่จำกัด | [ollama.com](https://ollama.com) |
+
+## 📁 โครงสร้าง
+
+```
+├── src/
+│   ├── proxy.py       # FastAPI proxy + API endpoints (port 8900)
+│   └── cli.py         # CLI tool ภาษาไทย
+├── web/
+│   └── index.html     # Dashboard UI
+├── providers.json     # Provider configuration
+├── scripts/
+│   └── install.sh     # One-line installer
+├── start.sh           # Start script (สร้างโดย installer)
+├── routerai           # CLI shortcut (สร้างโดย installer)
+├── Dockerfile
+├── docker-compose.yml
+└── requirements.txt
+```
+
+## 🏗️ Tech Stack
+
+- **Backend**: FastAPI + Uvicorn + httpx (async)
+- **Frontend**: Vanilla JS + CSS (ไม่ต้อง build)
+- **Config**: JSON files (ไม่ต้อง database)
+- **Fonts**: Sarabun + JetBrains Mono
 
 ## 📄 License
 

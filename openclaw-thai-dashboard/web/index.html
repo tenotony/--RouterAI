@@ -3,942 +3,702 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🇹🇭 OpenClaw Thai Dashboard</title>
+    <title>RouterAI + OpenClaw — แดชบอร์ดจัดการ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg: #0f0f1a;
-            --bg2: #1a1a2e;
-            --bg3: #16213e;
-            --card: #1e1e36;
-            --border: #2a2a4a;
-            --text: #e0e0e0;
-            --text2: #a0a0b0;
-            --accent: #6c63ff;
-            --accent2: #ff6b6b;
-            --green: #4ecdc4;
-            --yellow: #ffd93d;
-            --blue: #45b7d1;
-            --pink: #f093fb;
-            --radius: 12px;
-            --shadow: 0 4px 24px rgba(0,0,0,0.3);
+            --bg: #07070d;
+            --card: #111119;
+            --card-hover: #16161f;
+            --border: #1c1c2a;
+            --border-active: #2a2a40;
+            --text: #e8e8ed;
+            --text-dim: #6b6b80;
+            --text-mid: #9898ac;
+            --accent: #6366f1;
+            --accent-hover: #5558e0;
+            --green: #10b981;
+            --green-bg: rgba(16,185,129,0.08);
+            --yellow: #f59e0b;
+            --yellow-bg: rgba(245,158,11,0.08);
+            --red: #ef4444;
+            --red-bg: rgba(239,68,68,0.08);
+            --blue: #3b82f6;
+            --orange: #f97316;
+            --purple: #a855f7;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', 'Prompt', 'Sarabun', -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-        /* Sidebar */
-        .sidebar {
-            position: fixed; left: 0; top: 0; bottom: 0;
-            width: 260px; background: var(--bg2);
-            border-right: 1px solid var(--border);
-            z-index: 100; overflow-y: auto;
-            transition: transform 0.3s;
-        }
-        .sidebar-header {
-            padding: 24px 20px; border-bottom: 1px solid var(--border);
-            text-align: center;
-        }
-        .sidebar-header h1 {
-            font-size: 20px; background: linear-gradient(135deg, var(--accent), var(--pink));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .sidebar-header .sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
-        .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 14px 20px; cursor: pointer;
-            color: var(--text2); transition: all 0.2s;
-            border-left: 3px solid transparent;
-            font-size: 15px;
-        }
-        .nav-item:hover { background: var(--bg3); color: var(--text); }
-        .nav-item.active {
-            background: var(--bg3); color: var(--accent);
-            border-left-color: var(--accent);
-        }
-        .nav-item .icon { font-size: 20px; width: 28px; text-align: center; }
-        .nav-section {
-            padding: 16px 20px 8px; font-size: 11px;
-            text-transform: uppercase; letter-spacing: 1px;
-            color: var(--text2); opacity: 0.6;
+            font-family: 'Sarabun', -apple-system, sans-serif;
+            background: var(--bg); color: var(--text);
+            min-height: 100vh; line-height: 1.6;
         }
 
-        /* Main */
-        .main { margin-left: 260px; padding: 24px; min-height: 100vh; }
-        .topbar {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+        /* ─── Header ─── */
+        .header {
+            background: linear-gradient(180deg, #111119 0%, #0d0d14 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+            backdrop-filter: blur(12px);
         }
-        .topbar h2 { font-size: 24px; }
-        .topbar-actions { display: flex; gap: 8px; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-icon {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--accent), var(--purple));
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+        }
+        .logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+        .logo-sub { font-size: 0.75rem; color: var(--text-dim); font-weight: 400; }
+        .header-actions { display: flex; gap: 0.75rem; align-items: center; }
 
-        /* Cards */
-        .grid { display: grid; gap: 16px; }
-        .grid-4 { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
-        .grid-2 { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
-        .grid-1 { grid-template-columns: 1fr; }
+        /* ─── Status Pills ─── */
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.4rem 0.9rem; border-radius: 20px;
+            font-size: 0.8rem; font-weight: 600;
+        }
+        .pill-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
+        .pill-yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245,158,11,0.2); }
+        .pill-red { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+        .pill-dot { width: 7px; height: 7px; border-radius: 50%; }
+        .pill-dot.green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+        .pill-dot.yellow { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+        .pill-dot.red { background: var(--red); box-shadow: 0 0 6px var(--red); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 
+        /* ─── Container ─── */
+        .container { max-width: 1280px; margin: 0 auto; padding: 1.5rem; }
+
+        /* ─── Stats Row ─── */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 1.1rem 1.3rem;
+            transition: border-color 0.2s;
+        }
+        .stat-card:hover { border-color: var(--border-active); }
+        .stat-label { color: var(--text-dim); font-size: 0.78rem; font-weight: 500; margin-bottom: 0.3rem; }
+        .stat-value { font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; }
+        .stat-value.green { color: var(--green); }
+        .stat-value.accent { color: var(--accent); }
+        .stat-value.yellow { color: var(--yellow); }
+        .stat-sub { color: var(--text-dim); font-size: 0.72rem; margin-top: 0.15rem; }
+
+        /* ─── Tabs ─── */
+        .tabs {
+            display: flex; gap: 0.25rem;
+            background: var(--card); border-radius: 12px;
+            padding: 0.3rem; margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            overflow-x: auto;
+        }
+        .tab {
+            flex: 1; padding: 0.65rem 1rem; cursor: pointer;
+            border: none; background: none; color: var(--text-dim);
+            font-size: 0.88rem; font-weight: 600; border-radius: 10px;
+            transition: all 0.2s; font-family: inherit; white-space: nowrap;
+        }
+        .tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+        .tab.active { color: white; background: var(--accent); }
+
+        /* ─── Panels ─── */
+        .panel { display: none; animation: fadeIn 0.2s; }
+        .panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ─── Cards ─── */
         .card {
             background: var(--card); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 14px; padding: 1.5rem; margin-bottom: 1rem;
         }
-        .card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-        .card-title {
-            font-size: 13px; color: var(--text2); margin-bottom: 8px;
-            display: flex; align-items: center; gap: 6px;
+        .card-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 1.2rem;
         }
-        .card-value { font-size: 28px; font-weight: 700; }
-        .card-sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+        .card-title { font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
 
-        /* Provider cards */
+        /* ─── Provider Card ─── */
         .provider-card {
             background: var(--card); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 16px;
-            display: flex; flex-direction: column; gap: 12px;
+            border-radius: 12px; padding: 1.2rem; margin-bottom: 0.75rem;
+            display: grid; grid-template-columns: auto 1fr auto;
+            gap: 1rem; align-items: center; transition: all 0.2s;
         }
-        .provider-header { display: flex; justify-content: space-between; align-items: center; }
-        .provider-name { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .provider-name .emoji { font-size: 22px; }
-        .badge {
-            display: inline-block; padding: 2px 10px; border-radius: 20px;
-            font-size: 11px; font-weight: 600;
+        .provider-card:hover { border-color: var(--border-active); background: var(--card-hover); }
+        .provider-card.connected { border-left: 3px solid var(--green); }
+        .provider-card.disconnected { border-left: 3px solid var(--text-dim); opacity: 0.8; }
+        .provider-card.error { border-left: 3px solid var(--red); }
+
+        .prov-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 800;
         }
-        .badge-free { background: rgba(78, 205, 196, 0.15); color: var(--green); }
-        .badge-paid { background: rgba(255, 107, 107, 0.15); color: var(--accent2); }
-        .badge-trial { background: rgba(255, 217, 61, 0.15); color: var(--yellow); }
-        .badge-local { background: rgba(108, 99, 255, 0.15); color: var(--accent); }
-        .badge-healthy { background: rgba(78, 205, 196, 0.15); color: var(--green); }
-        .badge-error { background: rgba(255, 107, 107, 0.15); color: var(--accent2); }
+        .prov-info { min-width: 0; }
+        .prov-name { font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .prov-desc { color: var(--text-dim); font-size: 0.82rem; margin-top: 0.15rem; }
+        .prov-models { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.4rem; }
+        .prov-model {
+            background: rgba(99,102,241,0.08); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 5px;
+            font-size: 0.7rem; font-family: 'JetBrains Mono', monospace;
+        }
+        .prov-free {
+            background: var(--green-bg); color: var(--green);
+            padding: 0.15rem 0.5rem; border-radius: 5px;
+            font-size: 0.7rem; font-weight: 600;
+        }
+        .prov-actions { display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end; }
 
-        .provider-info { font-size: 13px; color: var(--text2); }
-        .provider-info span { margin-right: 12px; }
+        .prov-status-badge {
+            padding: 0.3rem 0.7rem; border-radius: 8px;
+            font-size: 0.75rem; font-weight: 700; text-align: center; min-width: 100px;
+        }
+        .badge-connected { background: var(--green-bg); color: var(--green); }
+        .badge-disconnected { background: var(--yellow-bg); color: var(--yellow); }
+        .badge-error { background: var(--red-bg); color: var(--red); }
+        .badge-testing { background: rgba(99,102,241,0.1); color: var(--accent); }
 
-        .provider-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
-        /* Buttons */
+        /* ─── Buttons ─── */
         .btn {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 8px 16px; border-radius: 8px; border: none;
-            font-size: 13px; cursor: pointer; transition: all 0.2s;
-            font-family: inherit;
+            padding: 0.5rem 1rem; border: none; border-radius: 8px;
+            font-size: 0.82rem; font-weight: 600; cursor: pointer;
+            transition: all 0.15s; font-family: inherit;
+            display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap;
         }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-primary { background: var(--accent); color: white; }
-        .btn-primary:hover { background: #5a52e0; }
-        .btn-success { background: var(--green); color: #000; }
-        .btn-success:hover { background: #3db8b0; }
-        .btn-danger { background: var(--accent2); color: white; }
-        .btn-danger:hover { background: #e05555; }
-        .btn-outline {
-            background: transparent; color: var(--text);
-            border: 1px solid var(--border);
-        }
-        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .btn-primary:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); }
+        .btn-success { background: var(--green); color: white; }
+        .btn-success:hover:not(:disabled) { filter: brightness(1.1); }
+        .btn-outline { background: transparent; color: var(--text-mid); border: 1px solid var(--border); }
+        .btn-outline:hover:not(:disabled) { border-color: var(--text-mid); color: var(--text); }
+        .btn-danger { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+        .btn-danger:hover:not(:disabled) { background: rgba(239,68,68,0.15); }
+        .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
+        .btn-lg { padding: 0.7rem 1.5rem; font-size: 0.95rem; }
+        .btn-full { width: 100%; justify-content: center; }
 
-        /* Forms */
-        .form-group { margin-bottom: 16px; }
-        .form-label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+        /* ─── Input ─── */
+        .input-row { display: flex; gap: 0.5rem; align-items: center; }
+        .form-group { margin-bottom: 0.85rem; }
+        .form-label { display: block; font-size: 0.82rem; color: var(--text-dim); font-weight: 500; margin-bottom: 0.3rem; }
         .form-input {
-            width: 100%; padding: 10px 14px; border-radius: 8px;
-            border: 1px solid var(--border); background: var(--bg);
-            color: var(--text); font-size: 14px; font-family: inherit;
+            width: 100%; padding: 0.6rem 0.85rem;
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 8px; color: var(--text);
+            font-size: 0.88rem; font-family: inherit; transition: all 0.2s;
         }
-        .form-input:focus { outline: none; border-color: var(--accent); }
+        .form-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+        .form-input::placeholder { color: var(--text-dim); }
 
-        /* Tables */
+        /* ─── Key Input Row ─── */
+        .key-row {
+            display: grid; grid-template-columns: 200px 1fr auto;
+            gap: 0.75rem; align-items: center;
+            padding: 0.8rem 0; border-bottom: 1px solid var(--border);
+        }
+        .key-row:last-child { border-bottom: none; }
+        .key-name { font-weight: 600; font-size: 0.9rem; }
+        .key-env { color: var(--text-dim); font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; }
+
+        /* ─── Code Block ─── */
+        .code-block {
+            background: #0a0a12; border: 1px solid var(--border);
+            border-radius: 10px; padding: 1.1rem 1.3rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem; color: #a5b4fc;
+            position: relative; overflow-x: auto; line-height: 1.7;
+        }
+
+        /* ─── Steps ─── */
+        .step { display: flex; gap: 1rem; padding: 1rem 0; }
+        .step-num {
+            width: 32px; height: 32px; background: var(--accent);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.85rem; flex-shrink: 0;
+        }
+        .step-num.done { background: var(--green); }
+        .step-content { flex: 1; }
+        .step-title { font-weight: 700; margin-bottom: 0.25rem; }
+        .step-desc { color: var(--text-dim); font-size: 0.85rem; }
+
+        /* ─── Doctor ─── */
+        .doctor-item {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 0.4rem;
+        }
+        .doctor-ok { background: var(--green-bg); }
+        .doctor-warn { background: var(--yellow-bg); }
+        .doctor-err { background: var(--red-bg); }
+
+        /* ─── Toast ─── */
+        .toast-container {
+            position: fixed; bottom: 1.5rem; right: 1.5rem;
+            z-index: 1000; display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .toast {
+            background: var(--card); border-radius: 10px;
+            padding: 0.8rem 1.2rem; font-weight: 600; font-size: 0.85rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            transform: translateX(120%); animation: slideIn 0.3s forwards;
+            max-width: 350px;
+        }
+        .toast.success { border: 1px solid var(--green); color: var(--green); }
+        .toast.error { border: 1px solid var(--red); color: var(--red); }
+        .toast.info { border: 1px solid var(--accent); color: var(--accent); }
+        @keyframes slideIn { to { transform: translateX(0); } }
+
+        /* ─── Empty State ─── */
+        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-dim); }
+        .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+        .empty-state .title { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+
+        /* ─── Table ─── */
         .table-wrap { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
-        th, td {
-            padding: 12px 16px; text-align: left;
-            border-bottom: 1px solid var(--border);
-            font-size: 14px;
-        }
-        th { color: var(--text2); font-weight: 600; font-size: 12px; text-transform: uppercase; }
-        tr:hover td { background: rgba(108, 99, 255, 0.05); }
+        th, td { padding: 0.7rem 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        th { color: var(--text-dim); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; }
+        tr:hover td { background: rgba(99,102,241,0.03); }
 
-        /* Modal */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.7); z-index: 200;
-            justify-content: center; align-items: center;
-        }
-        .modal-overlay.show { display: flex; }
-        .modal {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 24px;
-            width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto;
-        }
-        .modal h3 { margin-bottom: 16px; }
-
-        /* Toast */
-        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 300; }
-        .toast {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 8px; padding: 12px 20px; margin-bottom: 8px;
-            box-shadow: var(--shadow); animation: slideIn 0.3s;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .toast-success { border-left: 3px solid var(--green); }
-        .toast-error { border-left: 3px solid var(--accent2); }
-        @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } }
-
-        /* Progress bar */
-        .progress { background: var(--bg); border-radius: 4px; height: 8px; overflow: hidden; }
-        .progress-bar {
-            height: 100%; border-radius: 4px;
-            background: linear-gradient(90deg, var(--accent), var(--pink));
-            transition: width 0.5s;
-        }
-
-        /* Status dot */
-        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-        .dot-green { background: var(--green); box-shadow: 0 0 6px var(--green); }
-        .dot-red { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
-        .dot-yellow { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
-        .dot-gray { background: #666; }
-
-        /* Tags */
-        .model-tag {
-            display: inline-block; padding: 3px 10px; border-radius: 6px;
-            font-size: 12px; background: var(--bg3); margin: 2px;
-        }
-
-        /* Mobile */
-        .mobile-toggle {
-            display: none; position: fixed; top: 12px; left: 12px;
-            z-index: 150; background: var(--card); border: 1px solid var(--border);
-            border-radius: 8px; padding: 8px 12px; cursor: pointer;
-            font-size: 20px; color: var(--text);
-        }
         @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-            .main { margin-left: 0; }
-            .mobile-toggle { display: block; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .provider-card { grid-template-columns: 1fr; }
+            .prov-actions { flex-direction: row; align-items: center; }
+            .key-row { grid-template-columns: 1fr; }
+            .header { padding: 0.8rem 1rem; }
+            .tabs { overflow-x: auto; }
         }
-
-        .page { display: none; }
-        .page.active { display: block; }
-
-        /* Thai accent colors */
-        .thai-red { color: #ED1C24; }
-        .thai-blue { color: #241D8F; }
-        .gradient-text {
-            background: linear-gradient(135deg, var(--accent), var(--pink), var(--blue));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .empty-state {
-            text-align: center; padding: 60px 20px; color: var(--text2);
-        }
-        .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
-        .empty-state h3 { margin-bottom: 8px; color: var(--text); }
-
-        .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
-        .stat-row:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
 
-<button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
-
-<!-- Sidebar -->
-<nav class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <h1>🇹🇭 OpenClaw</h1>
-        <div class="sub">Thai Dashboard + API Router</div>
+<!-- Header -->
+<header class="header">
+    <div class="logo">
+        <div class="logo-icon">🔀</div>
+        <div>
+            <div class="logo-text">RouterAI</div>
+            <div class="logo-sub">OpenClaw Thai Dashboard • รวม AI ฟรี</div>
+        </div>
     </div>
-
-    <div class="nav-section">ภาพรวม</div>
-    <div class="nav-item active" data-page="overview">
-        <span class="icon">📊</span> หน้าแรก
+    <div class="header-actions">
+        <div class="status-pill" id="health-pill">
+            <div class="pill-dot" id="health-dot"></div>
+            <span id="health-text">กำลังโหลด...</span>
+        </div>
+        <button class="btn btn-outline" onclick="refreshAll()">🔄 รีเฟรช</button>
+        <button class="btn btn-primary" onclick="applyOpenClaw()">⚡ เชื่อม OpenClaw</button>
     </div>
-
-    <div class="nav-section">จัดการ</div>
-    <div class="nav-item" data-page="providers">
-        <span class="icon">🔌</span> Providers
-    </div>
-    <div class="nav-item" data-page="models">
-        <span class="icon">🧠</span> โมเดลทั้งหมด
-    </div>
-    <div class="nav-item" data-page="channels">
-        <span class="icon">💬</span> Channels
-    </div>
-    <div class="nav-item" data-page="skills">
-        <span class="icon">🛠️</span> Skills
-    </div>
-
-    <div class="nav-section">ตั้งค่า</div>
-    <div class="nav-item" data-page="config">
-        <span class="icon">⚙️</span> ตั้งค่า
-    </div>
-    <div class="nav-item" data-page="keys">
-        <span class="icon">🔑</span> API Keys
-    </div>
-
-    <div class="nav-section">สถานะ</div>
-    <div class="nav-item" data-page="stats">
-        <span class="icon">📈</span> สถิติ
-    </div>
-</nav>
+</header>
 
 <!-- Main Content -->
-<div class="main">
-    <!-- Overview Page -->
-    <div class="page active" id="page-overview">
-        <div class="topbar">
-            <h2>📊 ภาพรวมระบบ</h2>
-            <div class="topbar-actions">
-                <button class="btn btn-outline" onclick="loadAll()">🔄 รีเฟรช</button>
-                <button class="btn btn-primary" onclick="applyProxy()">⚡ เชื่อม OpenClaw</button>
-            </div>
-        </div>
+<div class="container">
 
-        <div class="grid grid-4" id="overview-stats"></div>
+    <!-- Stats Row -->
+    <div class="stats-row" id="stats-row"></div>
 
-        <h3 style="margin: 24px 0 16px;">🔌 Provider ที่ใช้งานได้</h3>
-        <div class="grid grid-2" id="overview-providers"></div>
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" data-tab="providers">🔌 Providers</button>
+        <button class="tab" data-tab="keys">🔑 API Keys</button>
+        <button class="tab" data-tab="openclaw">🧠 OpenClaw</button>
+        <button class="tab" data-tab="doctor">🩺 ตรวจสอบ</button>
+        <button class="tab" data-tab="guide">📖 วิธีใช้</button>
     </div>
 
-    <!-- Providers Page -->
-    <div class="page" id="page-providers">
-        <div class="topbar">
-            <h2>🔌 จัดการ Providers</h2>
-            <div class="topbar-actions">
-                <button class="btn btn-outline" onclick="loadProviders()">🔄 รีเฟรช</button>
-                <button class="btn btn-outline" onclick="testAllProviders()">🩺 ทดสอบทั้งหมด</button>
+    <!-- Providers Panel -->
+    <div class="panel active" id="panel-providers">
+        <div class="card-header">
+            <div class="card-title">🔌 Provider ทั้งหมด</div>
+            <div class="input-row">
+                <button class="btn btn-outline btn-sm" onclick="refreshProviders()">🔄 รีเฟรช</button>
+                <button class="btn btn-primary btn-sm" onclick="testAll()">🩺 ทดสอบทั้งหมด</button>
             </div>
         </div>
-        <div class="grid grid-2" id="providers-list"></div>
+        <div id="providers-list"></div>
     </div>
 
-    <!-- Models Page -->
-    <div class="page" id="page-models">
-        <div class="topbar">
-            <h2>🧠 โมเดลทั้งหมด</h2>
-            <div class="topbar-actions">
-                <button class="btn btn-outline" onclick="loadModels()">🔄 รีเฟรช</button>
-                <button class="btn btn-success" onclick="filterModels('free')">💰 เฉพาะฟรี</button>
-                <button class="btn btn-outline" onclick="filterModels('all')">ทั้งหมด</button>
+    <!-- API Keys Panel -->
+    <div class="panel" id="panel-keys">
+        <div class="card-header">
+            <div class="card-title">🔑 จัดการ API Keys</div>
+        </div>
+        <p style="color:var(--text-dim);margin-bottom:1rem;font-size:0.88rem">
+            ใส่ API Key อย่างน้อย 1 ตัวเพื่อเริ่มใช้งาน แนะนำเริ่มจาก <strong style="color:var(--green)">Groq</strong> (ฟรี, เร็วสุด)
+        </p>
+        <div class="card" id="keys-form"></div>
+        <div style="margin-top:1rem;display:flex;gap:0.5rem">
+            <button class="btn btn-primary btn-lg" onclick="saveAllKeys()">💾 บันทึก Key ทั้งหมด</button>
+        </div>
+    </div>
+
+    <!-- OpenClaw Panel -->
+    <div class="panel" id="panel-openclaw">
+        <div class="card-header">
+            <div class="card-title">🧠 เชื่อมต่อกับ OpenClaw</div>
+        </div>
+        <div class="card" id="openclaw-status"></div>
+        <div style="margin-top:1rem;display:flex;gap:0.5rem">
+            <button class="btn btn-primary btn-lg" onclick="applyOpenClaw()">⚡ ตั้งค่า OpenClaw อัตโนมัติ</button>
+            <button class="btn btn-outline" onclick="loadOpenClawConfig()">🔄 โหลด config</button>
+        </div>
+    </div>
+
+    <!-- Doctor Panel -->
+    <div class="panel" id="panel-doctor">
+        <div class="card-header">
+            <div class="card-title">🩺 ตรวจสอบระบบ</div>
+            <button class="btn btn-outline btn-sm" onclick="runDoctor()">🔍 ตรวจสอบ</button>
+        </div>
+        <div id="doctor-results">
+            <div class="empty-state">
+                <div class="icon">🩺</div>
+                <div class="title">กดปุ่ม "ตรวจสอบ" เพื่อตรวจระบบ</div>
             </div>
+        </div>
+    </div>
+
+    <!-- Guide Panel -->
+    <div class="panel" id="panel-guide">
+        <div class="card-header">
+            <div class="card-title">📖 วิธีใช้งาน</div>
         </div>
         <div class="card">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <div class="step-title">ใส่ API Key</div>
+                    <div class="step-desc">ไปที่แท็บ "API Keys" แล้วใส่ Key อย่างน้อย 1 ตัว แนะนำ Groq (ฟรี + เร็วสุด ~300ms)</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <div class="step-title">ทดสอบ Provider</div>
+                    <div class="step-desc">ที่แท็บ "Providers" กด "ทดสอบทั้งหมด" เพื่อเช็คว่า Key ใช้ได้</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <div class="step-title">เชื่อม OpenClaw</div>
+                    <div class="step-desc">กดปุ่ม ⚡ "เชื่อม OpenClaw" เพื่อตั้งค่า OpenClaw ให้ใช้ RouterAI โดยอัตโนมัติ</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <div class="step-title">รีสตาร์ท OpenClaw</div>
+                    <div class="step-desc">รันคำสั่ง <code>openclaw restart</code> เพื่อให้การตั้งค่ามีผล</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title" style="margin-bottom:1rem">🆓 Provider ฟรีที่แนะนำ</div>
             <div class="table-wrap">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Provider</th>
-                            <th>โมเดล</th>
-                            <th>ค่าใช้จ่าย</th>
-                            <th>สถานะ</th>
-                            <th>การใช้งาน</th>
-                        </tr>
-                    </thead>
-                    <tbody id="models-table"></tbody>
+                    <thead><tr><th>Provider</th><th>ข้อดี</th><th>Free Tier</th><th>สมัคร</th></tr></thead>
+                    <tbody>
+                        <tr><td>⚡ Groq</td><td>เร็วสุด ~300ms</td><td>ฟรี 30 RPM</td><td><a href="https://console.groq.com/keys" target="_blank" style="color:var(--accent)">console.groq.com</a></td></tr>
+                        <tr><td>🟢 Gemini</td><td>รองรับ Vision</td><td>ฟรี 15 RPM</td><td><a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent)">aistudio.google.com</a></td></tr>
+                        <tr><td>🚀 Cerebras</td><td>เร็วมาก</td><td>ฟรี 30 RPM</td><td><a href="https://cloud.cerebras.ai" target="_blank" style="color:var(--accent)">cloud.cerebras.ai</a></td></tr>
+                        <tr><td>🌐 OpenRouter</td><td>โมเดลฟรีเยอะ</td><td>:free suffix</td><td><a href="https://openrouter.ai/settings/keys" target="_blank" style="color:var(--accent)">openrouter.ai</a></td></tr>
+                        <tr><td>🔵 NVIDIA</td><td>Llama ฟรี</td><td>ฟรี 1000 req</td><td><a href="https://build.nvidia.com" target="_blank" style="color:var(--accent)">build.nvidia.com</a></td></tr>
+                        <tr><td>🇨🇳 SiliconFlow</td><td>Qwen ฟรี</td><td>ฟรีหลายโมเดล</td><td><a href="https://cloud.siliconflow.cn" target="_blank" style="color:var(--accent)">cloud.siliconflow.cn</a></td></tr>
+                        <tr><td>🏠 Ollama</td><td>Local 100% ฟรี</td><td>ไม่จำกัด</td><td><a href="https://ollama.com" target="_blank" style="color:var(--accent)">ollama.com</a></td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- Channels Page -->
-    <div class="page" id="page-channels">
-        <div class="topbar">
-            <h2>💬 Channels</h2>
-        </div>
-        <div id="channels-content"></div>
-    </div>
-
-    <!-- Skills Page -->
-    <div class="page" id="page-skills">
-        <div class="topbar">
-            <h2>🛠️ Skills ที่ติดตั้ง</h2>
-        </div>
-        <div class="grid grid-2" id="skills-list"></div>
-    </div>
-
-    <!-- Config Page -->
-    <div class="page" id="page-config">
-        <div class="topbar">
-            <h2>⚙️ ตั้งค่าระบบ</h2>
-        </div>
-        <div id="config-content"></div>
-    </div>
-
-    <!-- API Keys Page -->
-    <div class="page" id="page-keys">
-        <div class="topbar">
-            <h2>🔑 จัดการ API Keys</h2>
-            <div class="topbar-actions">
-                <button class="btn btn-outline" onclick="loadProviders()">🔄 รีเฟรช</button>
-            </div>
-        </div>
-        <p style="color: var(--text2); margin-bottom: 16px;">
-            ใส่ API Key อย่างน้อย 1 ตัวเพื่อเริ่มใช้งาน แนะนำเริ่มจาก <strong>Groq</strong> (ฟรี, เร็วสุด)
-        </p>
-        <div class="grid grid-1" id="keys-list"></div>
-    </div>
-
-    <!-- Stats Page -->
-    <div class="page" id="page-stats">
-        <div class="topbar">
-            <h2>📈 สถิติการใช้งาน</h2>
-            <div class="topbar-actions">
-                <button class="btn btn-outline" onclick="loadStats()">🔄 รีเฟรช</button>
-            </div>
-        </div>
-        <div id="stats-content"></div>
-    </div>
 </div>
 
-<!-- Modal -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-    <div class="modal" id="modal-content" onclick="event.stopPropagation()"></div>
-</div>
-
-<!-- Toasts -->
+<!-- Toast -->
 <div class="toast-container" id="toast-container"></div>
 
 <script>
-const API_BASE = '';  // Same origin
+const API = '';
 
-// === Navigation ===
-document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-        const page = item.dataset.page;
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        item.classList.add('active');
-        document.getElementById(`page-${page}`).classList.add('active');
-        document.getElementById('sidebar').classList.remove('open');
-        loadPage(page);
+// ─── Tabs ──────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
     });
 });
 
-function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('open');
-}
-
-// === API Helpers ===
+// ─── API helpers ───────────────────────────────────
 async function api(path, opts = {}) {
     try {
-        const resp = await fetch(API_BASE + path, {
+        const r = await fetch(API + path, {
             headers: { 'Content-Type': 'application/json' },
             ...opts,
         });
-        return await resp.json();
+        return await r.json();
     } catch (e) {
         toast('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้: ' + e.message, 'error');
         return null;
     }
 }
 
-// === Toast ===
 function toast(msg, type = 'success') {
     const c = document.getElementById('toast-container');
     const t = document.createElement('div');
-    t.className = `toast toast-${type}`;
-    t.innerHTML = `${type === 'success' ? '✅' : '❌'} ${msg}`;
+    t.className = `toast ${type}`;
+    t.textContent = (type === 'success' ? '✅ ' : type === 'error' ? '❌ ' : 'ℹ️ ') + msg;
     c.appendChild(t);
     setTimeout(() => t.remove(), 4000);
 }
 
-// === Modal ===
-function showModal(html) {
-    document.getElementById('modal-content').innerHTML = html;
-    document.getElementById('modal-overlay').classList.add('show');
-}
-function closeModal(e) {
-    if (!e || e.target === document.getElementById('modal-overlay'))
-        document.getElementById('modal-overlay').classList.remove('show');
-}
-
-// === Load Pages ===
-async function loadAll() {
-    loadOverview();
-    loadProviders();
+// ─── Refresh all ───────────────────────────────────
+async function refreshAll() {
+    const status = await api('/api/status');
+    if (!status) return;
+    renderStats(status);
+    renderHealthPill(status);
+    refreshProviders();
 }
 
-async function loadPage(page) {
-    switch(page) {
-        case 'overview': loadOverview(); break;
-        case 'providers': loadProviders(); break;
-        case 'models': loadModels(); break;
-        case 'channels': loadChannels(); break;
-        case 'skills': loadSkills(); break;
-        case 'config': loadConfig(); break;
-        case 'keys': loadKeys(); break;
-        case 'stats': loadStats(); break;
-    }
-}
-
-// === Overview ===
-let overviewData = null;
-async function loadOverview() {
-    const data = await api('/api/dashboard/overview');
+async function refreshProviders() {
+    const data = await api('/api/providers');
     if (!data) return;
-    overviewData = data;
+    renderProviders(data.providers);
+    renderKeysForm(data.providers);
+}
 
-    document.getElementById('overview-stats').innerHTML = `
-        <div class="card">
-            <div class="card-title">🔌 Providers</div>
-            <div class="card-value">${data.providers.available}/${data.providers.total}</div>
-            <div class="card-sub">ใช้งานได้ ${data.providers.withKeys} ตัวมี Key</div>
+// ─── Render Stats ──────────────────────────────────
+function renderStats(s) {
+    document.getElementById('stats-row').innerHTML = `
+        <div class="stat-card">
+            <div class="stat-label">📡 Providers ที่ใช้ได้</div>
+            <div class="stat-value green">${s.healthy_providers}/${s.total_providers}</div>
+            <div class="stat-sub">ตั้งค่าแล้ว ${s.configured_providers} ตัว</div>
         </div>
-        <div class="card">
-            <div class="card-title">🧠 โมเดล</div>
-            <div class="card-value">${data.models.total}</div>
-            <div class="card-sub">ฟรี ${data.models.free} โมเดล</div>
+        <div class="stat-card">
+            <div class="stat-label">📤 Requests</div>
+            <div class="stat-value accent">${s.total_requests}</div>
+            <div class="stat-sub">Tokens ที่ใช้: ${s.total_tokens.toLocaleString()}</div>
         </div>
-        <div class="card">
-            <div class="card-title">💬 Channels</div>
-            <div class="card-value">${Object.keys(data.channels).length}</div>
-            <div class="card-sub">${Object.keys(data.channels).join(', ') || 'ยังไม่ได้ตั้งค่า'}</div>
+        <div class="stat-card">
+            <div class="stat-label">💾 Cache</div>
+            <div class="stat-value">${s.cache_size}</div>
+            <div class="stat-sub">cached responses</div>
         </div>
-        <div class="card">
-            <div class="card-title">🧠 โมเดลปัจจุบัน</div>
-            <div class="card-value" style="font-size:16px">${typeof data.currentModel === 'object' ? data.currentModel.primary : data.currentModel}</div>
-            <div class="card-sub">${typeof data.currentModel === 'object' ? 'Fallback: ' + (data.currentModel.fallbacks || []).slice(0,2).join(', ') : ''}</div>
+        <div class="stat-card">
+            <div class="stat-label">⏱️ Uptime</div>
+            <div class="stat-value">${formatUptime(s.uptime_seconds)}</div>
+            <div class="stat-sub">${s.uptime_seconds} วินาที</div>
         </div>
     `;
-
-    // Load provider mini cards
-    const provData = await api('/api/dashboard/providers');
-    if (provData) {
-        const entries = Object.entries(provData).filter(([,p]) => p.hasKey || p.enabled);
-        document.getElementById('overview-providers').innerHTML = entries.map(([pid, p]) => `
-            <div class="provider-card">
-                <div class="provider-header">
-                    <div class="provider-name">
-                        <span class="emoji">${p.emoji}</span> ${p.name}
-                    </div>
-                    <span class="badge badge-${p.cost}">${costLabel(p.cost)}</span>
-                </div>
-                <div class="provider-info">
-                    <span>📋 ${p.models.length} โมเดล</span>
-                    <span>🆓 ${p.freeModels.length} ฟรี</span>
-                    ${p.requests > 0 ? `<span>📤 ${p.requests} ครั้ง</span>` : ''}
-                </div>
-                <div class="provider-actions">
-                    ${p.hasKey
-                        ? `<button class="btn btn-sm btn-outline" onclick="testProvider('${pid}')">🩺 ทดสอบ</button>`
-                        : `<button class="btn btn-sm btn-primary" onclick="showKeyModal('${pid}', '${p.name}', '${p.emoji}')">🔑 ใส่ Key</button>`
-                    }
-                </div>
-            </div>
-        `).join('');
-    }
 }
 
-function costLabel(cost) {
-    const labels = { free: 'ฟรี', paid: 'เสียเงิน', trial: 'ทดลอง', local: 'Local' };
-    return labels[cost] || cost;
+function formatUptime(s) {
+    if (s < 60) return s + 's';
+    if (s < 3600) return Math.floor(s/60) + 'm';
+    return Math.floor(s/3600) + 'h ' + Math.floor((s%3600)/60) + 'm';
 }
 
-// === Providers ===
-async function loadProviders() {
-    const data = await api('/api/dashboard/providers');
-    if (!data) return;
-
-    document.getElementById('providers-list').innerHTML = Object.entries(data).map(([pid, p]) => `
-        <div class="provider-card">
-            <div class="provider-header">
-                <div class="provider-name">
-                    <span class="emoji">${p.emoji}</span> ${p.name}
-                    ${p.hasKey ? '<span class="dot dot-green"></span>' : '<span class="dot dot-gray"></span>'}
-                </div>
-                <div>
-                    <span class="badge badge-${p.cost}">${costLabel(p.cost)}</span>
-                    ${p.healthy === false ? '<span class="badge badge-error">⚠️ มีปัญหา</span>' : ''}
-                </div>
-            </div>
-            <div class="provider-info">
-                <span>📋 ${p.models.length} โมเดล</span>
-                <span>🆓 ${p.freeModels.length} ฟรี</span>
-                <span>⭐ Priority: ${p.priority}</span>
-                ${p.requests > 0 ? `<span>📤 ${p.requests} requests</span>` : ''}
-                ${p.avgLatency > 0 ? `<span>⚡ ${p.avgLatency}ms</span>` : ''}
-                ${p.errors > 0 ? `<span style="color:var(--accent2)">❌ ${p.errors} errors</span>` : ''}
-            </div>
-            <div class="provider-info">
-                <strong>Models:</strong>
-                ${p.models.map(m => `<span class="model-tag">${p.freeModels.includes(m) ? '🆓 ' : ''}${m}</span>`).join('')}
-            </div>
-            <div class="provider-actions">
-                <button class="btn btn-sm btn-outline" onclick="testProvider('${pid}')">🩺 ทดสอบ</button>
-                <button class="btn btn-sm btn-outline" onclick="showKeyModal('${pid}', '${p.name}', '${p.emoji}')">🔑 Key</button>
-                <button class="btn btn-sm ${p.enabled ? 'btn-danger' : 'btn-success'}" onclick="toggleProvider('${pid}')">
-                    ${p.enabled ? '⏸️ ปิด' : '▶️ เปิด'}
-                </button>
-            </div>
-        </div>
-    `).join('');
-
-    // Also update keys page
-    loadKeysFromData(data);
-}
-
-// === Models ===
-let allModels = [];
-async function loadModels() {
-    const data = await api('/api/dashboard/models');
-    if (!data) return;
-    allModels = data.all;
-    renderModels(allModels);
-}
-
-function renderModels(models) {
-    document.getElementById('models-table').innerHTML = models.map(m => `
-        <tr>
-            <td>${m.emoji} ${m.providerName}</td>
-            <td><code>${m.model}</code></td>
-            <td><span class="badge badge-${m.cost}">${costLabel(m.cost)}</span></td>
-            <td>${m.healthy === true ? '<span class="dot dot-green"></span> ปกติ' : m.healthy === false ? '<span class="dot dot-red"></span> มีปัญหา' : '<span class="dot dot-gray"></span> ยังไม่ทดสอบ'}</td>
-            <td><button class="btn btn-sm btn-outline" onclick="useModel('${m.fullModel}')">ใช้โมเดลนี้</button></td>
-        </tr>
-    `).join('');
-}
-
-function filterModels(type) {
-    if (type === 'free') {
-        renderModels(allModels.filter(m => m.cost === 'free'));
+function renderHealthPill(s) {
+    const pill = document.getElementById('health-pill');
+    const dot = document.getElementById('health-dot');
+    const text = document.getElementById('health-text');
+    if (s.healthy_providers > 0) {
+        pill.className = 'status-pill pill-green';
+        dot.className = 'pill-dot green';
+        text.textContent = `${s.healthy_providers} provider พร้อมใช้`;
+    } else if (s.configured_providers > 0) {
+        pill.className = 'status-pill pill-yellow';
+        dot.className = 'pill-dot yellow';
+        text.textContent = 'มีปัญหาบางตัว';
     } else {
-        renderModels(allModels);
+        pill.className = 'status-pill pill-red';
+        dot.className = 'pill-dot red';
+        text.textContent = 'ยังไม่ตั้งค่า';
     }
 }
 
-async function useModel(modelId) {
-    showModal(`
-        <h3>🧠 ใช้โมเดล: <code>${modelId}</code></h3>
-        <p style="color:var(--text2);margin:12px 0">เพิ่มโมเดลนี้เข้า OpenClaw config</p>
-        <div class="form-group">
-            <label class="form-label">Alias (ชื่อย่อ):</label>
-            <input class="form-input" id="model-alias" value="${modelId.split('/').pop().substring(0,20)}">
-        </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end">
-            <button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
-            <button class="btn btn-primary" onclick="confirmUseModel('${modelId}')">✅ ตั้งเป็นโมเดลหลัก</button>
-        </div>
-    `);
-}
-
-async function confirmUseModel(modelId) {
-    const result = await api('/api/config/apply-proxy', { method: 'POST' });
-    if (result && result.success) {
-        toast(`ตั้งค่าโมเดล ${modelId} สำเร็จ!`);
-    } else {
-        toast(result?.error || 'เกิดข้อผิดพลาด', 'error');
-    }
-    closeModal();
-}
-
-// === Channels ===
-async function loadChannels() {
-    const data = await api('/api/dashboard/channels');
-    if (!data || Object.keys(data).length === 0) {
-        document.getElementById('channels-content').innerHTML = `
-            <div class="empty-state">
-                <div class="icon">💬</div>
-                <h3>ยังไม่มี Channel</h3>
-                <p>ตั้งค่า Channel ใน OpenClaw config เพื่อเชื่อมต่อกับ Telegram, Discord, ฯลฯ</p>
+// ─── Render Providers ──────────────────────────────
+function renderProviders(providers) {
+    const sorted = Object.entries(providers).sort((a, b) => b[1].priority - a[1].priority);
+    document.getElementById('providers-list').innerHTML = sorted.map(([pid, p]) => {
+        const cls = p.healthy && p.configured ? 'connected' : p.configured ? 'error' : 'disconnected';
+        return `
+        <div class="provider-card ${cls}">
+            <div class="prov-icon" style="background:${pid === 'groq' ? '#f97316' : pid === 'gemini' ? '#3b82f6' : pid === 'cerebras' ? '#ef4444' : pid === 'openrouter' ? '#6366f1' : pid === 'mimo' ? '#a855f7' : '#6b6b80'}20">
+                ${pid === 'groq' ? '⚡' : pid === 'gemini' ? '🟢' : pid === 'cerebras' ? '🚀' : pid === 'openrouter' ? '🌐' : pid === 'mistral' ? '🟣' : pid === 'nvidia' ? '🔵' : pid === 'deepseek' ? '💎' : pid === 'siliconflow' ? '🇨🇳' : pid === 'together' ? '🤝' : pid === 'ollama' ? '🏠' : pid === 'mimo' ? '🧠' : '🔌'}
             </div>
+            <div class="prov-info">
+                <div class="prov-name">
+                    ${p.name}
+                    ${p.is_free ? '<span class="prov-free">ฟรี</span>' : ''}
+                    ${p.supports_vision ? '<span class="prov-model">👁️ Vision</span>' : ''}
+                </div>
+                <div class="prov-desc">${p.description_th || ''}</div>
+                <div class="prov-models">
+                    ${p.models.map(m => `<span class="prov-model">${p.configured && p.healthy ? '' : ''}${m}</span>`).join('')}
+                </div>
+                ${p.total_requests > 0 ? `<div class="prov-desc">📤 ${p.total_requests} requests • ⚡ ${p.avg_latency_ms}ms avg • ✅ ${p.success_rate}% success</div>` : ''}
+            </div>
+            <div class="prov-actions">
+                <div class="prov-status-badge ${p.configured ? (p.healthy ? 'badge-connected' : 'badge-error') : 'badge-disconnected'}">
+                    ${p.configured ? (p.healthy ? '✅ พร้อมใช้' : '❌ มีปัญหา') : '⚠️ ยังไม่ใส่ Key'}
+                </div>
+                <div class="input-row">
+                    <button class="btn btn-outline btn-sm" onclick="testProvider('${pid}')">🩺 ทดสอบ</button>
+                    ${!p.configured && p.requires_key !== false ? `<button class="btn btn-primary btn-sm" onclick="focusKey('${pid}')">🔑 ใส่ Key</button>` : ''}
+                </div>
+            </div>
+        </div>
         `;
+    }).join('');
+}
+
+// ─── Render Keys Form ──────────────────────────────
+function renderKeysForm(providers) {
+    const sorted = Object.entries(providers).sort((a, b) => b[1].priority - a[1].priority);
+    document.getElementById('keys-form').innerHTML = sorted.filter(([, p]) => p.env_key).map(([pid, p]) => `
+        <div class="key-row">
+            <div>
+                <div class="key-name">${p.is_free ? '🆓' : '💰'} ${p.name}</div>
+                <div class="key-env">${p.env_key}</div>
+            </div>
+            <div>
+                <input class="form-input" type="password" id="key-${pid}" placeholder="วาง API Key ที่นี่..."
+                    data-env="${p.env_key}" data-prev="${p.configured ? 'set' : ''}"
+                    autocomplete="off">
+            </div>
+            <div>
+                ${p.signup_link ? `<a href="${p.signup_link}" target="_blank" class="btn btn-outline btn-sm">สมัคร →</a>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+function focusKey(pid) {
+    document.querySelector('[data-tab="keys"]').click();
+    setTimeout(() => {
+        const el = document.getElementById('key-' + pid);
+        if (el) el.focus();
+    }, 100);
+}
+
+async function saveAllKeys() {
+    const keys = {};
+    document.querySelectorAll('.form-input[data-env]').forEach(el => {
+        if (el.value) keys[el.dataset.env] = el.value;
+    });
+    if (Object.keys(keys).length === 0) {
+        toast('กรุณาใส่ Key อย่างน้อย 1 ตัว', 'error');
         return;
     }
+    const r = await api('/api/keys', { method: 'POST', body: JSON.stringify(keys) });
+    if (r?.success) {
+        toast(r.message);
+        refreshAll();
+    } else {
+        toast('บันทึกไม่สำเร็จ', 'error');
+    }
+}
 
-    document.getElementById('channels-content').innerHTML = `
-        <div class="grid grid-2">
-        ${Object.entries(data).map(([name, ch]) => `
-            <div class="card">
-                <div class="card-title">${channelEmoji(name)} ${name}</div>
-                <div class="stat-row">
-                    <span>สถานะ</span>
-                    <span>${ch.enabled ? '<span class="dot dot-green"></span> เปิดใช้งาน' : '<span class="dot dot-red"></span> ปิด'}</span>
+// ─── Test ──────────────────────────────────────────
+async function testProvider(pid) {
+    toast(`กำลังทดสอบ ${pid}...`, 'info');
+    const r = await api(`/api/test/${pid}`, { method: 'POST' });
+    if (r?.success) {
+        toast(`${pid}: ✅ ${r.latency_ms}ms`, 'success');
+    } else {
+        toast(`${pid}: ${r?.error || 'ล้มเหลว'}`, 'error');
+    }
+    refreshProviders();
+}
+
+async function testAll() {
+    toast('กำลังทดสอบทุก Provider...', 'info');
+    const r = await api('/api/test-all', { method: 'POST' });
+    if (r?.results) {
+        r.results.forEach(x => {
+            if (x.success) toast(`${x.provider}: ✅ ${x.latency_ms}ms`, 'success');
+            else toast(`${x.provider}: ❌ ${x.error}`, 'error');
+        });
+    }
+    refreshAll();
+}
+
+// ─── OpenClaw ──────────────────────────────────────
+async function loadOpenClawConfig() {
+    const r = await api('/api/openclaw/config');
+    if (!r) return;
+    document.getElementById('openclaw-status').innerHTML = r.config_exists ? `
+        <div class="card-title" style="margin-bottom:1rem">✅ OpenClaw Config พบแล้ว</div>
+        <div style="color:var(--text-dim);font-size:0.85rem;margin-bottom:0.5rem">Path: <code>${r.config_path}</code></div>
+        <pre style="background:var(--bg);padding:1rem;border-radius:8px;font-size:0.8rem;overflow-x:auto;max-height:300px;color:#a5b4fc">${JSON.stringify(r.config, null, 2)}</pre>
+    ` : `
+        <div class="empty-state">
+            <div class="icon">⚠️</div>
+            <div class="title">ไม่พบ OpenClaw Config</div>
+            <div>Path: ${r.config_path}</div>
+            <div style="margin-top:1rem">กรุณาติดตั้ง OpenClaw ก่อน: <code>npm install -g openclaw</code></div>
+        </div>
+    `;
+}
+
+async function applyOpenClaw() {
+    const r = await api('/api/openclaw/apply', { method: 'POST' });
+    if (r?.success) {
+        toast('✅ ตั้งค่า OpenClaw สำเร็จ!', 'success');
+        document.getElementById('openclaw-status').innerHTML = `
+            <div class="card-title" style="margin-bottom:1rem;color:var(--green)">✅ ตั้งค่าสำเร็จ!</div>
+            <div class="step">
+                <div class="step-num done">✓</div>
+                <div class="step-content">
+                    <div class="step-title">โมเดลหลัก: <code>${r.primary}</code></div>
+                    <div class="step-desc">Fallbacks: ${r.fallbacks?.map(f => `<code>${f}</code>`).join(', ') || '-'}</div>
+                    <div class="step-desc">Total models: ${r.total_models}</div>
                 </div>
-                <div class="stat-row">
-                    <span>Token</span>
-                    <span>${ch.hasToken ? '✅ ใส่แล้ว' : '⬜ ยังไม่ใส่'}</span>
-                </div>
-                <div class="stat-row">
-                    <span>DM Policy</span>
-                    <span>${ch.dmPolicy}</span>
-                </div>
-                <div class="stat-row">
-                    <span>Group Policy</span>
-                    <span>${ch.groupPolicy}</span>
-                </div>
+            </div>
+            <div style="margin-top:1rem;padding:1rem;background:var(--yellow-bg);border:1px solid rgba(245,158,11,0.2);border-radius:8px">
+                ⚠️ รันคำสั่งต่อไปนี้เพื่อใช้งาน:<br>
+                <code style="font-size:1rem;color:var(--accent)">openclaw restart</code>
+            </div>
+        `;
+    } else {
+        toast(r?.error || 'ตั้งค่าล้มเหลว', 'error');
+    }
+}
+
+// ─── Doctor ────────────────────────────────────────
+async function runDoctor() {
+    const r = await api('/api/doctor');
+    if (!r) return;
+    document.getElementById('doctor-results').innerHTML = `
+        <div class="status-pill ${r.status === 'healthy' ? 'pill-green' : 'pill-red'}" style="margin-bottom:1rem">
+            <div class="pill-dot ${r.status === 'healthy' ? 'green' : 'red'}"></div>
+            ${r.status === 'healthy' ? '✅ ระบบปกติ' : '❌ มีปัญหา'} (${r.healthy_providers}/${r.total_providers} providers)
+        </div>
+        ${r.details.map(d => `
+            <div class="doctor-item ${d.status === 'ok' ? 'doctor-ok' : d.status === 'warning' ? 'doctor-warn' : 'doctor-err'}">
+                <strong>${d.name}</strong>: ${d.message}
             </div>
         `).join('')}
-        </div>
     `;
 }
 
-function channelEmoji(name) {
-    const emojis = { telegram: '✈️', discord: '🎮', whatsapp: '📱', webchat: '🌐', slack: '💼', signal: '🔒', line: '💚' };
-    return emojis[name] || '💬';
-}
+// ─── Init ──────────────────────────────────────────
+refreshAll();
+loadOpenClawConfig();
 
-// === Skills ===
-async function loadSkills() {
-    const data = await api('/api/dashboard/skills');
-    if (!data || data.length === 0) {
-        document.getElementById('skills-list').innerHTML = `
-            <div class="empty-state">
-                <div class="icon">🛠️</div>
-                <h3>ยังไม่มี Skill</h3>
-                <p>ติดตั้ง Skills ผ่าน ClawHub หรือเพิ่มเองใน ~/.openclaw/skills/</p>
-            </div>
-        `;
-        return;
-    }
-
-    document.getElementById('skills-list').innerHTML = data.map(s => `
-        <div class="card">
-            <div class="card-title">${s.builtin ? '📦' : '🔧'} ${s.name}</div>
-            <div class="card-sub">${s.builtin ? 'Built-in' : 'Custom'} ${s.hasSkillMd ? '✅ มี SKILL.md' : '⚠️ ไม่มี SKILL.md'}</div>
-        </div>
-    `).join('');
-}
-
-// === Config ===
-async function loadConfig() {
-    const data = await api('/api/dashboard/config');
-    if (!data) return;
-
-    const model = data.model;
-    document.getElementById('config-content').innerHTML = `
-        <div class="grid grid-2">
-            <div class="card">
-                <div class="card-title">🧠 การตั้งค่าโมเดล</div>
-                <div class="stat-row">
-                    <span>โมเดลหลัก</span>
-                    <span><code>${typeof model.model === 'object' ? model.model.primary : model.model}</code></span>
-                </div>
-                ${typeof model.model === 'object' && model.model.fallbacks ? `
-                <div class="stat-row">
-                    <span>Fallbacks</span>
-                    <span>${model.model.fallbacks.map(f => `<code>${f}</code>`).join(', ')}</span>
-                </div>` : ''}
-                <div class="stat-row">
-                    <span>Image Model</span>
-                    <span><code>${typeof model.imageModel === 'object' ? model.imageModel.primary : model.imageModel || '-'}</code></span>
-                </div>
-                <div class="stat-row">
-                    <span>Timeout</span>
-                    <span>${model.timeoutSeconds}s</span>
-                </div>
-                <div class="stat-row">
-                    <span>Context</span>
-                    <span>${(model.contextTokens / 1000).toFixed(0)}K tokens</span>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-title">💻 ระบบ</div>
-                <div class="stat-row">
-                    <span>Platform</span>
-                    <span>${data.system.platform}</span>
-                </div>
-                <div class="stat-row">
-                    <span>Python</span>
-                    <span>${data.system.python}</span>
-                </div>
-                <div class="stat-row">
-                    <span>Config Path</span>
-                    <span><code style="font-size:11px">${data.configPath}</code></span>
-                </div>
-                <div class="stat-row">
-                    <span>Config</span>
-                    <span>${data.system.configExists ? '✅ พบแล้ว' : '❌ ไม่พบ'}</span>
-                </div>
-            </div>
-        </div>
-        <div style="margin-top:16px;display:flex;gap:8px">
-            <button class="btn btn-primary" onclick="applyProxy()">⚡ เชื่อม OpenClaw กับ Proxy</button>
-            <button class="btn btn-outline" onclick="reloadConfig()">🔄 โหลด Config ใหม่</button>
-        </div>
-    `;
-}
-
-// === API Keys ===
-function loadKeysFromData(data) {
-    document.getElementById('keys-list').innerHTML = Object.entries(data).map(([pid, p]) => `
-        <div class="card" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-            <div>
-                <div class="provider-name"><span class="emoji">${p.emoji}</span> ${p.name}</div>
-                <div class="card-sub">${p.hasKey ? '✅ มี Key แล้ว' : '⬜ ยังไม่มี Key'} · ${costLabel(p.cost)} · ${p.models.length} โมเดล</div>
-            </div>
-            <div class="provider-actions">
-                <button class="btn btn-sm btn-primary" onclick="showKeyModal('${pid}', '${p.name}', '${p.emoji}')">
-                    ${p.hasKey ? '🔄 เปลี่ยน Key' : '🔑 ใส่ Key'}
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// === Stats ===
-async function loadStats() {
-    const data = await api('/api/stats/routing');
-    if (!data) return;
-
-    const entries = Object.entries(data.requests);
-    document.getElementById('stats-content').innerHTML = `
-        <div class="grid grid-4" style="margin-bottom:16px">
-            <div class="card">
-                <div class="card-title">📤 Requests ทั้งหมด</div>
-                <div class="card-value">${entries.reduce((a,[,v]) => a+v, 0)}</div>
-            </div>
-            <div class="card">
-                <div class="card-title">❌ Errors</div>
-                <div class="card-value" style="color:var(--accent2)">${Object.values(data.errors).reduce((a,v) => a+v, 0)}</div>
-            </div>
-            <div class="card">
-                <div class="card-title">📦 Cache</div>
-                <div class="card-value">${data.cache}</div>
-                <div class="card-sub">cached responses</div>
-            </div>
-        </div>
-        ${entries.length > 0 ? `
-        <div class="card">
-            <div class="card-title">📊 รายละเอียดแต่ละ Provider</div>
-            <div class="table-wrap">
-                <table>
-                    <thead><tr><th>Provider</th><th>Requests</th><th>Errors</th><th>Latency</th></tr></thead>
-                    <tbody>
-                        ${entries.map(([pid, count]) => `
-                            <tr>
-                                <td>${pid}</td>
-                                <td>${count}</td>
-                                <td style="color:var(--accent2)">${data.errors[pid] || 0}</td>
-                                <td>${data.latencies[pid] || '-'}ms</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        </div>` : '<div class="empty-state"><div class="icon">📈</div><h3>ยังไม่มีข้อมูล</h3><p>เริ่มใช้งานเพื่อดูสถิติ</p></div>'}
-    `;
-}
-
-// === Actions ===
-function showKeyModal(pid, name, emoji) {
-    showModal(`
-        <h3>${emoji} ใส่ API Key สำหรับ ${name}</h3>
-        <div class="form-group" style="margin-top:16px">
-            <label class="form-label">API Key:</label>
-            <input class="form-input" id="api-key-input" type="password" placeholder="วาง API Key ที่นี่...">
-        </div>
-        <p style="font-size:12px;color:var(--text2);margin-bottom:16px">
-            ${getKeyHelp(pid)}
-        </p>
-        <div style="display:flex;gap:8px;justify-content:flex-end">
-            <button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
-            <button class="btn btn-primary" onclick="submitKey('${pid}')">💾 บันทึก</button>
-        </div>
-    `);
-    document.getElementById('api-key-input').focus();
-}
-
-function getKeyHelp(pid) {
-    const links = {
-        groq: 'สมัครที่: <a href="https://console.groq.com/keys" target="_blank" style="color:var(--accent)">console.groq.com/keys</a>',
-        gemini: 'สมัครที่: <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent)">aistudio.google.com/apikey</a>',
-        cerebras: 'สมัครที่: <a href="https://cloud.cerebras.ai" target="_blank" style="color:var(--accent)">cloud.cerebras.ai</a>',
-        openrouter: 'สมัครที่: <a href="https://openrouter.ai/settings/keys" target="_blank" style="color:var(--accent)">openrouter.ai/settings/keys</a>',
-        mistral: 'สมัครที่: <a href="https://console.mistral.ai/api-keys/" target="_blank" style="color:var(--accent)">console.mistral.ai</a>',
-        nvidia: 'สมัครที่: <a href="https://build.nvidia.com/explore/discover" target="_blank" style="color:var(--accent)">build.nvidia.com</a>',
-        deepseek: 'สมัครที่: <a href="https://platform.deepseek.com" target="_blank" style="color:var(--accent)">platform.deepseek.com</a>',
-        siliconflow: 'สมัครที่: <a href="https://cloud.siliconflow.cn" target="_blank" style="color:var(--accent)">cloud.siliconflow.cn</a>',
-        together: 'สมัครที่: <a href="https://api.together.xyz/settings/api-keys" target="_blank" style="color:var(--accent)">api.together.xyz</a>',
-    };
-    return links[pid] || 'ดูรายละเอียดในหน้า Provider';
-}
-
-async function submitKey(pid) {
-    const key = document.getElementById('api-key-input').value.trim();
-    if (!key) { toast('กรุณาใส่ API Key', 'error'); return; }
-
-    const result = await api(`/api/provider/${pid}/key`, {
-        method: 'POST',
-        body: JSON.stringify({ apiKey: key })
-    });
-
-    if (result && result.success) {
-        toast(`บันทึก Key สำเร็จ!`);
-        closeModal();
-        loadProviders();
-        loadOverview();
-    } else {
-        toast(result?.error || 'เกิดข้อผิดพลาด', 'error');
-    }
-}
-
-async function testProvider(pid) {
-    toast(`กำลังทดสอบ ${pid}...`);
-    const result = await api(`/api/provider/${pid}/test`, { method: 'POST' });
-    if (result && result.success) {
-        toast(`${pid} ปกติ! (${result.latency}ms)`);
-    } else {
-        toast(`${pid}: ${result?.error || 'ล้มเหลว'}`, 'error');
-    }
-}
-
-async function testAllProviders() {
-    toast('กำลังทดสอบทุก Provider...');
-    const data = await api('/api/dashboard/providers');
-    if (!data) return;
-    for (const pid of Object.keys(data)) {
-        if (data[pid].hasKey) {
-            const result = await api(`/api/provider/${pid}/test`, { method: 'POST' });
-            if (result?.success) {
-                toast(`${pid}: ✅ ${result.latency}ms`);
-            } else {
-                toast(`${pid}: ❌ ${result?.error || 'ล้มเหลว'}`, 'error');
-            }
-        }
-    }
-    loadProviders();
-}
-
-async function toggleProvider(pid) {
-    const result = await api(`/api/provider/${pid}/toggle`, { method: 'POST' });
-    if (result && result.success) {
-        toast(result.message);
-        loadProviders();
-    }
-}
-
-async function applyProxy() {
-    const result = await api('/api/config/apply-proxy', { method: 'POST' });
-    if (result && result.success) {
-        toast('✅ เชื่อม OpenClaw สำเร็จ! รัน openclaw restart เพื่อใช้งาน');
-        showModal(`
-            <h3>✅ เชื่อมต่อสำเร็จ!</h3>
-            <p style="margin:12px 0">โมเดลหลัก: <code>${result.primary}</code></p>
-            <p style="margin:12px 0">Fallbacks: ${result.fallbacks.map(f => `<code>${f}</code>`).join(', ')}</p>
-            <p style="color:var(--yellow);margin:12px 0">⚠️ รันคำสั่งต่อไปนี้เพื่อใช้งาน:</p>
-            <pre style="background:var(--bg);padding:12px;border-radius:8px;font-size:14px">openclaw restart</pre>
-            <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
-                <button class="btn btn-primary" onclick="closeModal()">เข้าใจแล้ว 👍</button>
-            </div>
-        `);
-    } else {
-        toast(result?.error || 'เชื่อมต่อล้มเหลว', 'error');
-    }
-}
-
-async function reloadConfig() {
-    const result = await api('/api/config/reload', { method: 'POST' });
-    if (result?.success) {
-        toast('โหลด Config ใหม่แล้ว!');
-        loadConfig();
-    }
-}
-
-// === Init ===
-loadAll();
+// Auto-refresh every 30s
+setInterval(refreshAll, 30000);
 </script>
 </body>
 </html>

@@ -3,4 +3,7 @@ __pycache__/
 venv/
 .env
 *.bak
+*.log
+.routerai_state.json
+api_keys.json
 .git/
